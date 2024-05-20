@@ -69,6 +69,15 @@
                                         </c:if>
                                     </div>
 
+
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">FullName</label>
+                                        <input type="text" class="form-control" id="name" value="${staff.name}" name="name">
+                                        <c:if test="${not empty errors}">
+                                            <span id="code-error" class="text-danger">${errors['name']}</span>
+                                        </c:if>
+                                    </div>
+
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Username</label>
                                         <input type="password" class="form-control" id="name" value="${staff.username}" name="username">

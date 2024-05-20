@@ -1,11 +1,15 @@
 package com.example.asm1java5.controller;
 
 import com.example.asm1java5.entity.Customer;
+import com.example.asm1java5.entity.Size;
 import com.example.asm1java5.entity.Staff;
 import com.example.asm1java5.repository.CustomerRepository;
 import com.example.asm1java5.repository.StaffRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,8 +26,14 @@ public class StaffController {
     private final StaffRepository staffRepository;
 
     @GetMapping("/index")
-    public String index(Model model){
-        model.addAttribute("listStaff", staffRepository.findAll());
+    public String index(Model model , @RequestParam(value = "page", defaultValue = "0") int page){
+        int pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Staff> staffPage = staffRepository.findAllPageable(pageable);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", staffPage.getTotalPages());
+        model.addAttribute("totalItems", staffPage.getTotalElements());
+        model.addAttribute("listStaff", staffPage.getContent());
         return "staff/index";
     }
 

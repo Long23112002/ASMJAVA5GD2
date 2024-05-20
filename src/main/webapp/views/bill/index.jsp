@@ -53,26 +53,67 @@
         <main class="content px-3 py-4">
             <div class="container-fluid">
                 <div class="mb-3">
-                    <h1>Manager Color</h1>
+                    <h1>Manager Product Detail</h1>
                 </div>
-                <a href="${pageContext.request.contextPath}/color/create"> <button class="btn btn-outline-success">Add Color</button></a>
+                <a href="${pageContext.request.contextPath}/bill/create"> <button class="btn btn-outline-success">Add Bill</button></a>
+                <div class="col-12" style="display: flex; justify-content: end">
+<%--                    <form style="padding-right: 100px" id="form" action="${pageContext.request.contextPath}/bill/filter" method="post" class="d-flex align-items-center">--%>
+<%--                        <div class="col-6">--%>
+<%--                            <span>Product</span>--%>
+<%--                            <select name="searchProduct" class="form-select" aria-label="Default select example">--%>
+<%--                                <option value="" ${not empty sessionScope.selectedProduct ? '' : 'selected'}>All</option>--%>
+<%--                                <c:forEach items="${listProduct}" var="product">--%>
+<%--                                    <option value="${product.id}" ${product.id == sessionScope.selectedProduct ? 'selected' : ''}>--%>
+<%--                                            ${product.name}--%>
+<%--                                    </option>--%>
+<%--                                </c:forEach>--%>
+<%--                            </select>--%>
+<%--                        </div>--%>
 
+<%--                        <div class="col-3" style="padding: 0 13px">--%>
+<%--                            <span>Size</span>--%>
+<%--                            <select name="searchSize" class="form-select" aria-label="Default select example">--%>
+<%--                                <option value="" ${not empty sessionScope.selectedSize ? '' : 'selected'}>All</option>--%>
+<%--                                <c:forEach items="${listSize}" var="size">--%>
+<%--                                    <option value="${size.id}" ${size.id == sessionScope.selectedSize ? 'selected' : ''}>--%>
+<%--                                            ${size.name}--%>
+<%--                                    </option>--%>
+<%--                                </c:forEach>--%>
+<%--                            </select>--%>
+<%--                        </div>--%>
+
+<%--                        <div class="col-3">--%>
+<%--                            <span>Color</span>--%>
+<%--                            <select name="searchColor" class="form-select" aria-label="Default select example">--%>
+<%--                                <option value="" ${not empty sessionScope.selectedColor ? '' : 'selected'}>All</option>--%>
+<%--                                <c:forEach items="${listColor}" var="color">--%>
+<%--                                    <option value="${color.id}" ${color.id == sessionScope.selectedColor ? 'selected' : ''}>--%>
+<%--                                            ${color.name}--%>
+<%--                                    </option>--%>
+<%--                                </c:forEach>--%>
+<%--                            </select>--%>
+<%--                        </div>--%>
+<%--                        <button type="submit" class="btn btn-outline-dark mt-4 mx-2">Filter</button>--%>
+<%--                    </form>--%>
+                </div>
                 <table class="table">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Code</th>
-                        <th scope="col">Name</th>
+                        <th scope="col">Staff</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Function</th>
+                        <th scope="col">Functions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach var="item" items="${listColor}" >
+                    <c:forEach var="item" items="${listBill}" >
                         <tr>
                             <th scope="row">${item.id}</th>
-                            <td>${item.code}</td>
-                            <td>${item.name}</td>
+                            <td>${staffNames[item.idStaff]}</td>
+                            <td>${customerNames[item.idCustomer]}</td>
+                            <td>${item.dateBuy}</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${item.status eq 1}">
@@ -84,8 +125,8 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/color/edit/${item.id}"> <button class="btn btn-outline-warning">Update</button></a>
-                                <a href="${pageContext.request.contextPath}/color/delete/${item.id}" onclick="return confirm('Are you sure you want to delete color ?')"> <button class="btn btn-outline-danger">Delete</button></a>
+                                <a href="${pageContext.request.contextPath}/bill/edit/${item.id}"> <button class="btn btn-outline-warning">Update</button></a>
+                                <a href="${pageContext.request.contextPath}/bill/delete/${item.id}" onclick="return confirm('Are you sure you want to delete color ?')"> <button class="btn btn-outline-danger">Delete</button></a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -162,6 +203,7 @@
     });
 
 </script>
+<script src="../../js/scopeFilter.js"></script>
 
 </body>
 </html>

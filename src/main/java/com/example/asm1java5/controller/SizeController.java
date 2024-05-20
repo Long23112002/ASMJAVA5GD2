@@ -2,11 +2,15 @@ package com.example.asm1java5.controller;
 
 
 import com.example.asm1java5.entity.Color;
+import com.example.asm1java5.entity.Product;
 import com.example.asm1java5.entity.Size;
 import com.example.asm1java5.repository.ColorRepository;
 import com.example.asm1java5.repository.SizeRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,8 +27,14 @@ public class SizeController {
     private final SizeRepository sizeRepository;
 
     @GetMapping("/index")
-    public String index(Model model){
-        model.addAttribute("listSize", sizeRepository.findAll());
+    public String index(Model model , @RequestParam(value = "page", defaultValue = "0") int page){
+        int pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Size> sizePage = sizeRepository.findAllPageable(pageable);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", sizePage.getTotalPages());
+        model.addAttribute("totalItems", sizePage.getTotalElements());
+        model.addAttribute("listSize", sizePage.getContent());
         return "size/index";
     }
 

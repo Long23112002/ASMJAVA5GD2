@@ -1,10 +1,15 @@
 package com.example.asm1java5.repository;
 
+import com.example.asm1java5.entity.Product;
 import com.example.asm1java5.entity.Size;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class SizeRepository {
@@ -14,8 +19,23 @@ public class SizeRepository {
     public SizeRepository() {
         listSize = new ArrayList<>();
         listSize.add(new Size(1, "SZ01", "XL", 1));
-        listSize.add(new Size(2, "SZ02", "S", 0));
+        listSize.add(new Size(2, "SZ02", "S", 1));
         listSize.add(new Size(3, "SZ03", "M", 1));
+    }
+
+    public Page<Size> findAllPageable(Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+        int startIndex = pageNumber * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, listSize.size());
+        List<Size> pageContent = listSize.subList(startIndex, endIndex);
+        return new PageImpl<>(pageContent, pageable, listSize.size());
+    }
+
+    public List<Size> findAllByStatusActive() {
+        return listSize.stream()
+                .filter(size -> size.getStatus() == 1)
+                .collect(Collectors.toList());
     }
 
     public List<Size> findAll() {

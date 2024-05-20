@@ -1,10 +1,14 @@
 package com.example.asm1java5.controller;
 
 
+import com.example.asm1java5.entity.Color;
 import com.example.asm1java5.entity.Customer;
 import com.example.asm1java5.repository.CustomerRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,8 +26,14 @@ public class CustomerController {
     private final CustomerRepository customerRepository;
 
     @GetMapping("/index")
-    public String index(Model model){
-        model.addAttribute("listCustomer", customerRepository.findAll());
+    public String index(Model model , @RequestParam(value = "page", defaultValue = "0") int page){
+        int pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Customer>customerPage = customerRepository.findAllPageable(pageable);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", customerPage.getTotalPages());
+        model.addAttribute("totalItems", customerPage.getTotalElements());
+        model.addAttribute("listCustomer", customerPage.getContent());
         return "customer/index";
     }
 

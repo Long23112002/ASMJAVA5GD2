@@ -14,7 +14,7 @@
     <%--    <link rel="stylesheet" type="text/css"--%>
     <%--          href="${pageContext.request.contextPath}/src/main/webapp/css/style.css"/>--%>
 
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../.././css/style.css">
 </head>
 
 <body>
@@ -28,7 +28,39 @@
                 <a href="#">ADMIN MANAGER</a>
             </div>
         </div>
-        <jsp:include page=".././base/navbarbase.jsp"></jsp:include>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a href="${pageContext.request.contextPath}/admin/manager_product" class="sidebar-link">
+                    <i class="fa-solid fa-shirt"></i>
+                    <span>Manager Product</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="${pageContext.request.contextPath}/admin/manager_color" class="sidebar-link">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>Manager Product</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="${pageContext.request.contextPath}/admin/manager_size" class="sidebar-link">
+                    <i class="fa-solid fa-ruler"></i>
+                    <span>Manager Size</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="${pageContext.request.contextPath}/admin/manager_customer" class="sidebar-link">
+                    <i class="fa-solid fa-person"></i>
+                    <span>Manager Customer</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="${pageContext.request.contextPath}/admin/manager_product_detail" class="sidebar-link">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Manager Product Detail</span>
+                </a>
+            </li>
+
+        </ul>
         <div class="sidebar-footer">
             <a href="#" class="sidebar-link">
                 <i class="lni lni-exit"></i>
@@ -54,56 +86,38 @@
         <main class="content px-3 py-4">
             <div class="container-fluid">
                 <div class="mb-3">
-                    <h1 class="text-center">Create Staff</h1>
+                    <h1 class="text-center">Create product</h1>
                 </div>
                 <div class="row">
                     <div class="col-12 d-flex justify-content-center">
                         <div class="card w-50">
                             <div class="card-body">
-                                <form action="${pageContext.request.contextPath}/staff/store" method="post" >
+                                <form action="${pageContext.request.contextPath}/bill/store" method="post"  >
                                     <div class="mb-3">
-                                        <label for="code" class="form-label">Code Customer</label>
-                                        <input type="text" class="form-control" id="code" value="${staff.code}" name="code">
+                                        <label for="code" class="form-label">Code</label>
+                                        <input type="text" class="form-control" id="code" value="${bill.code}" name="code">
                                         <c:if test="${not empty errors}">
                                             <span id="code-error" class="text-danger">${errors['code']}</span>
                                         </c:if>
-
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">FullName</label>
-                                        <input type="text" class="form-control" id="name" value="${staff.name}" name="name">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="name" value="${product.name}" name="name">
                                         <c:if test="${not empty errors}">
                                             <span id="code-error" class="text-danger">${errors['name']}</span>
                                         </c:if>
                                     </div>
-
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Username</label>
-                                        <input type="text" class="form-control" id="name" value="${staff.username}" name="username">
-                                        <c:if test="${not empty errors}">
-                                            <span id="code-error" class="text-danger">${errors['username']}</span>
-                                        </c:if>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="phone" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="phone" value="${staff.password}" name="password">
-                                        <c:if test="${not empty errors}">
-                                            <span id="code-error" class="text-danger">${errors['password']}</span>
-                                        </c:if>
-                                    </div>
-
                                     <div class="mb-3">
                                         <select class="form-select" name="status" aria-label="Default select example">
-                                            <option value="1" <c:if test="${staff.status eq 1}">selected</c:if>>Active</option>
-                                            <option value="0" <c:if test="${staff.status ne 1}">selected</c:if>>No Active</option>
+                                            <option value="1" <c:if test="${product.status eq 1}">selected</c:if>>Active</option>
+                                            <option value="0" <c:if test="${product.status ne 1}">selected</c:if>>No Active</option>
                                         </select>
                                         <span id="status-error" class="text-danger"></span>
                                     </div>
 
 
-                                    <a href="${pageContext.request.contextPath}/staff/index">
+                                    <a href="${pageContext.request.contextPath}/product/index">
                                         <button type="button" class="btn btn-warning">Back</button>
                                     </a>
                                     <button type="submit" class="btn btn-outline-success">Add</button>
@@ -143,6 +157,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-
 </body>
 </html>

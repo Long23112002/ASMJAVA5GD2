@@ -11,6 +11,10 @@ import com.example.asm1java5.repository.SizeRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,21 +37,29 @@ public class ProductDetailController {
     private final SizeRepository sizeRepository;
     private final ColorRepository colorRepository;
 
+
     @GetMapping("/index")
-    public String index(Model model) {
-        List<Product> listProduct = productRepository.findAll();
-        List<Color> listColor = colorRepository.findAll();
-        List<com.example.asm1java5.entity.Size> listSize = sizeRepository.findAll();
+    public String index(Model model , @RequestParam(value = "page", defaultValue = "0") int page){
+        int pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<ProductDetail> productDetailPage =productDetailRepository.findAllPageable(pageable);
+        List<Product> listProduct = productRepository.findAllByStatusActive();
+        List<Color> listColor = colorRepository.findAllByStatusActive();
+        List<com.example.asm1java5.entity.Size> listSize = sizeRepository.findAllByStatusActive();
         Map<Integer, String> productNames = listProduct.stream().collect(Collectors.toMap(Product::getId, Product::getName));
         Map<Integer, String> colorNames = listColor.stream().collect(Collectors.toMap(Color::getId, Color::getName));
         Map<Integer, String> sizeNames = listSize.stream().collect(Collectors.toMap(Size::getId, Size::getName));
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productDetailPage.getTotalPages());
+        model.addAttribute("totalItems", productDetailPage.getTotalElements());
+        model.addAttribute("listProductDetail", productDetailPage.getContent());
         model.addAttribute("productNames", productNames);
         model.addAttribute("colorNames", colorNames);
         model.addAttribute("sizeNames", sizeNames);
         model.addAttribute("listColor", listColor);
         model.addAttribute("listSize", listSize);
         model.addAttribute("listProduct", listProduct);
-        model.addAttribute("listProductDetail", productDetailRepository.findAll());
         return "product_detail/index";
     }
 

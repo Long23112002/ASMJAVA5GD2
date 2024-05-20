@@ -2,6 +2,10 @@ package com.example.asm1java5.repository;
 
 import com.example.asm1java5.entity.Product;
 import com.example.asm1java5.entity.ProductDetail;
+import com.example.asm1java5.entity.Size;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -19,6 +23,15 @@ public class ProductDetailRepository {
 
     public List<ProductDetail> findAll() {
         return listProductDetail;
+    }
+
+    public Page<ProductDetail> findAllPageable(Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+        int startIndex = pageNumber * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, listProductDetail.size());
+        List<ProductDetail> pageContent = listProductDetail.subList(startIndex, endIndex);
+        return new PageImpl<>(pageContent, pageable, listProductDetail.size());
     }
 
     public void save(ProductDetail productDetail) {

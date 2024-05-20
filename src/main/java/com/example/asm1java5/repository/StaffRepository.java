@@ -1,11 +1,17 @@
 package com.example.asm1java5.repository;
 
 import com.example.asm1java5.entity.Customer;
+import com.example.asm1java5.entity.Product;
+import com.example.asm1java5.entity.ProductDetail;
 import com.example.asm1java5.entity.Staff;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class StaffRepository {
@@ -13,12 +19,29 @@ public class StaffRepository {
 
     public StaffRepository() {
         listStaff = new ArrayList<>();
-        listStaff.add(new Staff(1, "SF01", "Long", "0888880243", 1));
-        listStaff.add(new Staff(2, "SF02", "Test01", "099999999", 1));
+        listStaff.add(new Staff(1, "SF01","Nguyen Hai Long" , "Long", "0888880243", 1));
+        listStaff.add(new Staff(2, "SF02", "Abc", "Test01", "099999999", 1));
+
     }
 
     public List<Staff> findAll() {
         return listStaff;
+    }
+
+    public List<Staff> findAllByStatusActive() {
+        return listStaff.stream()
+                .filter(staff -> staff.getStatus() == 1)
+                .collect(Collectors.toList());
+    }
+
+
+    public Page<Staff> findAllPageable(Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+        int startIndex = pageNumber * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, listStaff.size());
+        List<Staff> pageContent = listStaff.subList(startIndex, endIndex);
+        return new PageImpl<>(pageContent, pageable, listStaff.size());
     }
 
     public void save(Staff staff) {
@@ -39,6 +62,7 @@ public class StaffRepository {
         for (Staff c : listStaff) {
             if (c.getId().equals(staff.getId())) {
                 c.setCode(staff.getCode());
+                c.setName(staff.getName());
                 c.setUsername(staff.getUsername());
                 c.setPassword(staff.getPassword());
                 c.setStatus(staff.getStatus());

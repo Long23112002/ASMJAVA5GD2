@@ -1,10 +1,16 @@
 package com.example.asm1java5.repository;
 
+import com.example.asm1java5.entity.Color;
 import com.example.asm1java5.entity.Customer;
+import com.example.asm1java5.entity.Staff;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class CustomerRepository {
@@ -20,6 +26,21 @@ public class CustomerRepository {
 
     public List<Customer> findAll() {
         return listCustomer;
+    }
+
+    public List<Customer> findAllByStatusActive() {
+        return listCustomer.stream()
+                .filter(customer -> customer.getStatus() == 1)
+                .collect(Collectors.toList());
+    }
+
+    public Page<Customer> findAllPageable(Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+        int startIndex = pageNumber * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, listCustomer.size());
+        List<Customer> pageContent = listCustomer.subList(startIndex, endIndex);
+        return new PageImpl<>(pageContent, pageable, listCustomer.size());
     }
 
     public void save(Customer customer) {
