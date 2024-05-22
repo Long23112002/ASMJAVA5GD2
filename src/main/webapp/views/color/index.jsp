@@ -56,6 +56,15 @@
                     <h1>Manager Color</h1>
                 </div>
                 <a href="${pageContext.request.contextPath}/color/create"> <button class="btn btn-outline-success">Add Color</button></a>
+                <div class="d-flex justify-content-end">
+                    <form id="colorSearchForm" action="${pageContext.request.contextPath}/color/search" method="post">
+                        <div class="input-group">
+                            <input id="colorSearchInput" name="colorSearch" type="text" class="form-control" placeholder="Search color" aria-label="Search color">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
 
                 <table class="table">
                     <thead>
@@ -68,6 +77,11 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <c:if test="${empty listColor}">
+                        <tr>
+                            <td colspan="5" class="text-center">No color not found</td>
+                        </tr>
+                    </c:if>
                     <c:forEach var="item" items="${listColor}" >
                         <tr>
                             <th scope="row">${item.id}</th>

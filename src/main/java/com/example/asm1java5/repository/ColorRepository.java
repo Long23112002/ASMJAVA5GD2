@@ -27,6 +27,12 @@ public class ColorRepository {
         return listColor;
     }
 
+    public List<Color> findByName(String name) {
+        return listColor.stream()
+                .filter(color -> color.getName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
     public List<Color> findAllByStatusActive() {
         return listColor.stream()
                 .filter(color -> color.getStatus() == 1)
@@ -41,6 +47,22 @@ public class ColorRepository {
         int endIndex = Math.min(startIndex + pageSize, listColor.size());
         List<Color> pageContent = listColor.subList(startIndex, endIndex);
         return new PageImpl<>(pageContent, pageable, listColor.size());
+    }
+
+    public boolean exitsByName(String name) {
+        return listColor.stream().anyMatch(color -> color.getName().trim().equalsIgnoreCase(name.trim()));
+    }
+
+    public boolean exitsByCode(String code) {
+        return listColor.stream().anyMatch(color -> color.getCode().trim().equals(code.trim()));
+    }
+
+    public boolean existsByNameAndIdNot(String name, Integer id) {
+        return listColor.stream().anyMatch(color -> color.getName().trim().equals(name.trim()) && !color.getId().equals(id));
+    }
+
+    public boolean existsByCodeAndIdNot(String code, Integer id) {
+        return listColor.stream().anyMatch(color -> color.getCode().trim().equals(code.trim()) && !color.getId().equals(id));
     }
 
     public void save(Color color) {

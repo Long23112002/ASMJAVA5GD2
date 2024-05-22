@@ -17,6 +17,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -42,8 +43,22 @@ public class StaffController {
         return "staff/create";
     }
 
+    @PostMapping("/search")
+    public String search(@RequestParam("staffValueSearch") String name, Model model){
+        List<Staff> listStaff = staffRepository.findByName(name);
+        model.addAttribute("listStaff", listStaff);
+        return "staff/index";
+    }
+
+
     @PostMapping("/store")
     public String store(@Valid Staff staff , BindingResult result , Model model){
+        if(staffRepository.existsByCode(staff.getCode().trim())){
+            result.rejectValue("code", "code", "Code is exits");
+        }
+        if(staffRepository.existsByUsername(staff.getUsername().trim())){
+            result.rejectValue("username", "username", "Username is exits");
+        }
         if (result.hasErrors()){
             model.addAttribute("errors", getErrorMessages(result));
             return "staff/create";
@@ -62,6 +77,12 @@ public class StaffController {
 
     @PostMapping("/update/{id}")
     public String update( @Valid Staff staff, BindingResult result, Model model){
+        if(staffRepository.existsByCodeAndIdNot(staff.getCode(), staff.getId())){
+            result.rejectValue("code", "code", "Code is exits");
+        }
+        if(staffRepository.existsByUsernameAndIdNot(staff.getUsername(), staff.getId())){
+            result.rejectValue("username", "username", "Username is exits");
+        }
         if (result.hasErrors()){
             model.addAttribute("errors", getErrorMessages(result));
             return "staff/edit";

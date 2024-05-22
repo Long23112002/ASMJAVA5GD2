@@ -45,7 +45,7 @@ public class ProductDetailController {
         Page<ProductDetail> productDetailPage =productDetailRepository.findAllPageable(pageable);
         List<Product> listProduct = productRepository.findAllByStatusActive();
         List<Color> listColor = colorRepository.findAllByStatusActive();
-        List<com.example.asm1java5.entity.Size> listSize = sizeRepository.findAllByStatusActive();
+        List<Size> listSize = sizeRepository.findAllByStatusActive();
         Map<Integer, String> productNames = listProduct.stream().collect(Collectors.toMap(Product::getId, Product::getName));
         Map<Integer, String> colorNames = listColor.stream().collect(Collectors.toMap(Color::getId, Color::getName));
         Map<Integer, String> sizeNames = listSize.stream().collect(Collectors.toMap(Size::getId, Size::getName));

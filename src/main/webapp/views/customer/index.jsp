@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>Admin Product Detail</title>
+    <title>Manager Customer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
@@ -55,7 +55,14 @@
                 <div class="mb-3">
                     <h1>Manager Customer</h1>
                     <a href="${pageContext.request.contextPath}/customer/create"> <button class="btn btn-outline-success">Add Customer</button></a>
-
+                    <div class="d-flex justify-content-end">
+                        <form id="colorSearchForm" action="${pageContext.request.contextPath}/customer/search" method="post">
+                            <div class="input-group">
+                                <input id="colorSearchInput" name="customerValue" type="text" class="form-control" placeholder="Search phone" aria-label="Search phone">
+                                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+                            </div>
+                        </form>
+                    </div>
                     <table class="table">
                         <thead>
                         <tr>
@@ -68,6 +75,11 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <c:if test="${empty listCustomer}">
+                            <tr>
+                                <td colspan="6" class="text-center">No data</td>
+                            </tr>
+                        </c:if>
                         <c:forEach var="item" items="${listCustomer}" >
                             <tr>
                                 <th scope="row">${item.id}</th>

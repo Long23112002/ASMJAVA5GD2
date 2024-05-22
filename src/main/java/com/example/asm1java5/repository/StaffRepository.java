@@ -1,9 +1,6 @@
 package com.example.asm1java5.repository;
 
-import com.example.asm1java5.entity.Customer;
-import com.example.asm1java5.entity.Product;
-import com.example.asm1java5.entity.ProductDetail;
-import com.example.asm1java5.entity.Staff;
+import com.example.asm1java5.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +28,12 @@ public class StaffRepository {
     public List<Staff> findAllByStatusActive() {
         return listStaff.stream()
                 .filter(staff -> staff.getStatus() == 1)
+                .collect(Collectors.toList());
+    }
+
+    public List<Staff> findByName(String name) {
+        return listStaff.stream()
+                .filter(staff -> staff.getName().toLowerCase().contains(name.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -78,5 +81,21 @@ public class StaffRepository {
             }
         }
         return null;
+    }
+
+    public boolean existsByCode(String code) {
+        return listStaff.stream().anyMatch(staff -> staff.getCode().equals(code));
+    }
+
+    public boolean existsByUsername(String username) {
+        return listStaff.stream().anyMatch(staff -> staff.getUsername().equals(username));
+    }
+
+    public boolean existsByCodeAndIdNot(String code, Integer id) {
+        return listStaff.stream().anyMatch(staff -> staff.getCode().equals(code) && !staff.getId().equals(id));
+    }
+
+    public boolean existsByUsernameAndIdNot(String username, Integer id) {
+        return listStaff.stream().anyMatch(staff -> staff.getUsername().equals(username) && !staff.getId().equals(id));
     }
 }

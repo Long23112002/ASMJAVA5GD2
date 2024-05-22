@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <html>
 <head>
-    <title>Create Color</title>
+    <title>Create Size</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
@@ -28,39 +28,7 @@
                 <a href="#">ADMIN MANAGER</a>
             </div>
         </div>
-        <ul class="sidebar-nav">
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_product" class="sidebar-link">
-                    <i class="fa-solid fa-shirt"></i>
-                    <span>Manager Product</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_color" class="sidebar-link">
-                    <i class="fa-solid fa-palette"></i>
-                    <span>Manager Color</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_size" class="sidebar-link">
-                    <i class="fa-solid fa-ruler"></i>
-                    <span>Manager Size</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_customer" class="sidebar-link">
-                    <i class="fa-solid fa-person"></i>
-                    <span>Manager Customer</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_product_detail" class="sidebar-link">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span>Manager Product Detail</span>
-                </a>
-            </li>
-
-        </ul>
+        <jsp:include page="../.././views/base/navbarbase.jsp"></jsp:include>
         <div class="sidebar-footer">
             <a href="#" class="sidebar-link">
                 <i class="lni lni-exit"></i>

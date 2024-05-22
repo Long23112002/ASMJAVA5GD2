@@ -1,6 +1,7 @@
 package com.example.asm1java5.repository;
 
 import com.example.asm1java5.entity.Color;
+import com.example.asm1java5.entity.Customer;
 import com.example.asm1java5.entity.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -30,6 +31,12 @@ public class ProductRepository {
     public List<Product> findAllByStatusActive() {
         return listProduct.stream()
                 .filter(product -> product.getStatus() == 1)
+                .collect(Collectors.toList());
+    }
+
+    public List<Product> findByName(String name) {
+        return listProduct.stream()
+                .filter(customer -> customer.getName().toLowerCase().contains(name.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -80,5 +87,21 @@ public class ProductRepository {
             }
         }
         return null;
+    }
+
+    public boolean exitsByName(String name) {
+        return listProduct.stream().anyMatch(product -> product.getName().equals(name.trim()));
+    }
+
+    public boolean exitsByCode(String code) {
+        return listProduct.stream().anyMatch(product -> product.getCode().equals(code.trim()));
+    }
+
+    public boolean existsByNameAndIdNot(String name, Integer id) {
+        return listProduct.stream().anyMatch(product -> product.getName().equals(name.trim()) && !product.getId().equals(id));
+    }
+
+    public boolean existsByCodeAndIdNot(String code, Integer id) {
+        return listProduct.stream().anyMatch(product -> product.getCode().equals(code.trim()) && !product.getId().equals(id));
     }
 }

@@ -23,6 +23,12 @@ public class SizeRepository {
         listSize.add(new Size(3, "SZ03", "M", 1));
     }
 
+    public List<Size> findByName(String name) {
+        return listSize.stream()
+                .filter(customer -> customer.getName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
     public Page<Size> findAllPageable(Pageable pageable) {
         int pageSize = pageable.getPageSize();
         int pageNumber = pageable.getPageNumber();
@@ -74,5 +80,21 @@ public class SizeRepository {
             }
         }
         return null;
+    }
+
+    public boolean existsByName(String name) {
+        return listSize.stream().anyMatch(size -> size.getName().trim().equalsIgnoreCase(name.trim()));
+    }
+
+    public boolean existsByCode(String code) {
+        return listSize.stream().anyMatch(size -> size.getCode().trim().equals(code.trim()));
+    }
+
+    public boolean existsByNameAndIdNot(String name, Integer id) {
+        return listSize.stream().anyMatch(size -> size.getName().trim().equals(name.trim()) && !size.getId().equals(id));
+    }
+
+    public boolean existsByCodeAndIdNot(String code, Integer id) {
+        return listSize.stream().anyMatch(size -> size.getCode().trim().equals(code.trim()) && !size.getId().equals(id));
     }
 }

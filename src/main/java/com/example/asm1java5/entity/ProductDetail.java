@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,7 +37,6 @@ public class ProductDetail {
     @Positive(message = "Quantity must be greater than 0")
     @NotNull(message = "Quantity is required")
     private Integer quantity;
-
 
     private Integer status;
 }

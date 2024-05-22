@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>Manager Size</title>
+    <title>Manager Order Detail</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
@@ -53,46 +53,65 @@
         <main class="content px-3 py-4">
             <div class="container-fluid">
                 <div class="mb-3">
-                    <h1>Manager size</h1>
+                    <h1>Manager Order Detail</h1>
                 </div>
-                <a href="${pageContext.request.contextPath}/size/create"> <button class="btn btn-outline-success">Add size</button></a>
-                <div class="d-flex justify-content-end">
-                    <form  action="${pageContext.request.contextPath}/size/search" method="post">
-                        <div class="input-group">
-                            <input name="sizeValueSearch" type="text" class="form-control" placeholder="Search color" aria-label="Search color">
-                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+                <div class="col-12" style="display: flex; justify-content: end">
+                    <form style="padding-right: 100px" id="form" action="${pageContext.request.contextPath}/bill/filter" method="post" class="d-flex align-items-center">
+                        <div class="col-8">
+                            <span>Status</span>
+                            <select name="statusSearch" class="form-select" aria-label="Default select example">
+                                <option value="-1" ${valueSearch == -1 ? 'selected' : ''}>All</option>
+                                <option value="0" ${valueSearch == 0 ? 'selected' : ''}>Pending</option>
+                                <option value="1" ${valueSearch  == 1 ? 'selected' : ''}>Completed</option>
+                                <option value="2" ${valueSearch == 2 ? 'selected' : ''}>Cancel</option>
+                            </select>
                         </div>
+                        <button type="submit" class="btn btn-outline-dark mt-4 mx-2">Filter</button>
                     </form>
                 </div>
+
+
                 <table class="table">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Code</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Function</th>
+                        <th scope="col">Order</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Color</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Total Money</th>
+                        <th scope="col">Functions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach var="item" items="${listSize}" >
+                    <c:forEach var="item" items="${listBillDetail}" >
                         <tr>
                             <th scope="row">${item.id}</th>
-                            <td>${item.code}</td>
-                            <td>${item.name}</td>
+                            <td>${billDetailMap[item.idBill].id}</td>
+                            <td>${products[productDetailMap[item.idProductDetail].idProduct]}</td>
+                            <td>${colors[productDetailMap[item.idProductDetail].idColor]}</td>
+                            <td>${sizes[productDetailMap[item.idProductDetail].idSize]}</td>
+                            <td>${item.quantity}</td>
+                            <td>${item.price}</td>
+                            <td>${item.quantity * item.price}</td>
+
+<%--                            <td>--%>
+<%--                                <c:choose>--%>
+<%--                                    <c:when test="${item.status eq 1}">--%>
+<%--                                        <span style="color: green;">Completed</span>--%>
+<%--                                    </c:when>--%>
+<%--                                    <c:when test="${item.status eq 0}">--%>
+<%--                                        <span style="color: chocolate;">Pending</span>--%>
+<%--                                    </c:when>--%>
+<%--                                    <c:otherwise>--%>
+<%--                                        <span style="color: red;">Cancel</span>--%>
+<%--                                    </c:otherwise>--%>
+<%--                                </c:choose>--%>
+<%--                            </td>--%>
                             <td>
-                                <c:choose>
-                                    <c:when test="${item.status eq 1}">
-                                        <span style="color: green;">Active</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span style="color: red;">No Active</span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>
-                                <a href="${pageContext.request.contextPath}/size/edit/${item.id}"> <button class="btn btn-outline-warning">Update</button></a>
-                                <a href="${pageContext.request.contextPath}/size/delete/${item.id}" onclick="return confirm('Are you sure you want to delete color ?')"> <button class="btn btn-outline-danger">Delete</button></a>
+                                <a href="${pageContext.request.contextPath}/bill-detail/edit/${item.id}"> <button class="btn btn-outline-warning">Update</button></a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -169,6 +188,7 @@
     });
 
 </script>
+<script src="../../js/scopeFilter.js"></script>
 
 </body>
 </html>

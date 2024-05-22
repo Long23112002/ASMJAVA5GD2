@@ -1,8 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html>
 <head>
-    <title>Admin Color</title>
+    <title>Manager Order</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
@@ -53,55 +54,31 @@
         <main class="content px-3 py-4">
             <div class="container-fluid">
                 <div class="mb-3">
-                    <h1>Manager Product Detail</h1>
+                    <h1>Manager Order</h1>
                 </div>
-                <a href="${pageContext.request.contextPath}/bill/create"> <button class="btn btn-outline-success">Add Bill</button></a>
                 <div class="col-12" style="display: flex; justify-content: end">
-<%--                    <form style="padding-right: 100px" id="form" action="${pageContext.request.contextPath}/bill/filter" method="post" class="d-flex align-items-center">--%>
-<%--                        <div class="col-6">--%>
-<%--                            <span>Product</span>--%>
-<%--                            <select name="searchProduct" class="form-select" aria-label="Default select example">--%>
-<%--                                <option value="" ${not empty sessionScope.selectedProduct ? '' : 'selected'}>All</option>--%>
-<%--                                <c:forEach items="${listProduct}" var="product">--%>
-<%--                                    <option value="${product.id}" ${product.id == sessionScope.selectedProduct ? 'selected' : ''}>--%>
-<%--                                            ${product.name}--%>
-<%--                                    </option>--%>
-<%--                                </c:forEach>--%>
-<%--                            </select>--%>
-<%--                        </div>--%>
-
-<%--                        <div class="col-3" style="padding: 0 13px">--%>
-<%--                            <span>Size</span>--%>
-<%--                            <select name="searchSize" class="form-select" aria-label="Default select example">--%>
-<%--                                <option value="" ${not empty sessionScope.selectedSize ? '' : 'selected'}>All</option>--%>
-<%--                                <c:forEach items="${listSize}" var="size">--%>
-<%--                                    <option value="${size.id}" ${size.id == sessionScope.selectedSize ? 'selected' : ''}>--%>
-<%--                                            ${size.name}--%>
-<%--                                    </option>--%>
-<%--                                </c:forEach>--%>
-<%--                            </select>--%>
-<%--                        </div>--%>
-
-<%--                        <div class="col-3">--%>
-<%--                            <span>Color</span>--%>
-<%--                            <select name="searchColor" class="form-select" aria-label="Default select example">--%>
-<%--                                <option value="" ${not empty sessionScope.selectedColor ? '' : 'selected'}>All</option>--%>
-<%--                                <c:forEach items="${listColor}" var="color">--%>
-<%--                                    <option value="${color.id}" ${color.id == sessionScope.selectedColor ? 'selected' : ''}>--%>
-<%--                                            ${color.name}--%>
-<%--                                    </option>--%>
-<%--                                </c:forEach>--%>
-<%--                            </select>--%>
-<%--                        </div>--%>
-<%--                        <button type="submit" class="btn btn-outline-dark mt-4 mx-2">Filter</button>--%>
-<%--                    </form>--%>
+                    <form style="padding-right: 100px" id="form" action="${pageContext.request.contextPath}/bill/filter" method="post" class="d-flex align-items-center">
+                        <div class="col-8">
+                            <span>Status</span>
+                            <select name="statusSearch" class="form-select" aria-label="Default select example">
+                                <option value="-1" ${valueSearch == -1 ? 'selected' : ''}>All</option>
+                                <option value="0" ${valueSearch == 0 ? 'selected' : ''}>Pending</option>
+                                <option value="1" ${valueSearch  == 1 ? 'selected' : ''}>Completed</option>
+                                <option value="2" ${valueSearch == 2 ? 'selected' : ''}>Cancel</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-outline-dark mt-4 mx-2">Filter</button>
+                    </form>
                 </div>
+
+
                 <table class="table">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Staff</th>
                         <th scope="col">Customer</th>
+                        <th scope="col">Phone Customer</th>
                         <th scope="col">Date</th>
                         <th scope="col">Status</th>
                         <th scope="col">Functions</th>
@@ -113,20 +90,27 @@
                             <th scope="row">${item.id}</th>
                             <td>${staffNames[item.idStaff]}</td>
                             <td>${customerNames[item.idCustomer]}</td>
-                            <td>${item.dateBuy}</td>
+                            <td>${phoneCustomer[item.idCustomer]}</td>
+                            <td>
+                                <fmt:parseDate value="${item.dateBuy}" pattern="EEE MMM dd HH:mm:ss zzz yyyy" var="parsedDate" />
+                                <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy HH:mm" timeZone="PST8PDT"/>
+                            </td>
+
                             <td>
                                 <c:choose>
                                     <c:when test="${item.status eq 1}">
-                                        <span style="color: green;">Active</span>
+                                        <span style="color: green;">Completed</span>
+                                    </c:when>
+                                    <c:when test="${item.status eq 0}">
+                                        <span style="color: chocolate;">Pending</span>
                                     </c:when>
                                     <c:otherwise>
-                                        <span style="color: red;">No Active</span>
+                                        <span style="color: red;">Cancel</span>
                                     </c:otherwise>
                                 </c:choose>
                             </td>
                             <td>
                                 <a href="${pageContext.request.contextPath}/bill/edit/${item.id}"> <button class="btn btn-outline-warning">Update</button></a>
-                                <a href="${pageContext.request.contextPath}/bill/delete/${item.id}" onclick="return confirm('Are you sure you want to delete color ?')"> <button class="btn btn-outline-danger">Delete</button></a>
                             </td>
                         </tr>
                     </c:forEach>

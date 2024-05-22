@@ -7,6 +7,7 @@ import com.example.asm1java5.repository.ColorRepository;
 import com.example.asm1java5.repository.CustomerRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/color")
+@Slf4j
 public class ColorController {
     private final ColorRepository colorRepository;
 
@@ -37,6 +39,12 @@ public class ColorController {
         return "color/index";
     }
 
+    @PostMapping("/search")
+    public String search(@RequestParam("colorSearch") String name, Model model){
+        model.addAttribute("listColor", colorRepository.findByName(name));
+        return "color/index";
+    }
+
     @GetMapping("/create")
     public String create(@ModelAttribute("color") Color color){
         return "color/create";
@@ -44,6 +52,15 @@ public class ColorController {
 
     @PostMapping("/store")
     public String store(@Valid Color color , BindingResult result , Model model){
+        if (colorRepository.exitsByCode(color.getCode())){
+            result.rejectValue("code", "code", "Color code is exits");
+        }
+
+
+        if(colorRepository.exitsByName(color.getName().trim())){
+            result.rejectValue("name", "name", "Color name is exits");
+        }
+
         if (result.hasErrors()){
             model.addAttribute("errors", getErrorMessages(result));
             return "color/create";
@@ -62,6 +79,12 @@ public class ColorController {
 
     @PostMapping("/update/{id}")
     public String update( @Valid Color color, BindingResult result, Model model){
+        if (colorRepository.existsByCodeAndIdNot(color.getCode().trim() , color.getId())){
+            result.rejectValue("code", "code", "Color code is exits");
+        }
+        if(colorRepository.existsByNameAndIdNot(color.getName().trim() , color.getId())){
+            result.rejectValue("name", "name", "Color name is exits");
+        }
         if (result.hasErrors()){
             model.addAttribute("errors", getErrorMessages(result));
             return "color/edit";

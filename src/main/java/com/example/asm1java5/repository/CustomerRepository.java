@@ -18,7 +18,7 @@ public class CustomerRepository {
 
     public CustomerRepository() {
         listCustomer = new ArrayList<>();
-        listCustomer.add(new Customer(1, "C001", "Nguyen Van A", "0901234567", 0));
+        listCustomer.add(new Customer(1, "C001", "Nguyen Van A", "0901234567", 1));
         listCustomer.add(new Customer(2, "C002", "Nguyen Van B", "0901234568", 1));
         listCustomer.add(new Customer(3, "C003", "Nguyen Van C", "0901234569", 1));
         listCustomer.add(new Customer(4, "C004", "Nguyen Van D", "0901234570", 1));
@@ -31,6 +31,12 @@ public class CustomerRepository {
     public List<Customer> findAllByStatusActive() {
         return listCustomer.stream()
                 .filter(customer -> customer.getStatus() == 1)
+                .collect(Collectors.toList());
+    }
+
+    public List<Customer> findByPhone(String phone) {
+        return listCustomer.stream()
+                .filter(customer -> customer.getPhone().toLowerCase().contains(phone.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -77,4 +83,21 @@ public class CustomerRepository {
         }
         return null;
     }
+
+    public boolean exitsByCode(String code) {
+        return listCustomer.stream().anyMatch(customer -> customer.getCode().equals(code));
+    }
+
+    public boolean exitsByPhone(String phone) {
+        return listCustomer.stream().anyMatch(customer -> customer.getPhone().equals(phone.trim()));
+    }
+
+    public boolean existsByPhoneAndIdNot(String phone, Integer id) {
+        return listCustomer.stream().anyMatch(customer -> customer.getPhone().trim().equals(phone.trim()) && !customer.getId().equals(id));
+    }
+
+    public boolean existsByCodeAndIdNot(String code, Integer id) {
+        return listCustomer.stream().anyMatch(customer -> customer.getCode().trim().equals(code.trim()) && !customer.getId().equals(id));
+    }
+
 }

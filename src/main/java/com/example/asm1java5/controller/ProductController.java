@@ -41,8 +41,21 @@ public class ProductController {
         return "product/create";
     }
 
+    @PostMapping("/search")
+    public String search(@RequestParam("productSearchValue") String name, Model model){
+        model.addAttribute("listProduct", productRepository.findByName(name));
+        return "product/index";
+    }
+
+
     @PostMapping("/store")
     public String store(@Valid Product product , BindingResult result , Model model){
+        if(productRepository.exitsByCode(product.getCode())){
+            result.rejectValue("code", "code", "Code is exits");
+        }
+        if(productRepository.exitsByName(product.getName())){
+            result.rejectValue("name", "name", "Name is exits");
+        }
         if (result.hasErrors()){
             model.addAttribute("errors", getErrorMessages(result));
             return "product/create";
@@ -61,6 +74,12 @@ public class ProductController {
 
     @PostMapping("/update/{id}")
     public String update( @Valid Product product, BindingResult result, Model model){
+        if (productRepository.existsByCodeAndIdNot(product.getCode(), product.getId())){
+            result.rejectValue("code", "code", "Product code is exits");
+        }
+        if(productRepository.existsByNameAndIdNot(product.getName(), product.getId())){
+            result.rejectValue("name", "name", "Product name is exits");
+        }
         if (result.hasErrors()){
             model.addAttribute("errors", getErrorMessages(result));
             return "product/edit";

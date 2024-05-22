@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class ProductDetailRepository {
@@ -23,6 +24,12 @@ public class ProductDetailRepository {
 
     public List<ProductDetail> findAll() {
         return listProductDetail;
+    }
+
+    public List<ProductDetail> findAllByStatusActive(){
+        return listProductDetail.stream()
+                .filter(productDetail -> productDetail.getStatus() == 1)
+                .collect(Collectors.toList());
     }
 
     public Page<ProductDetail> findAllPageable(Pageable pageable) {

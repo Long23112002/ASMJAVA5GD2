@@ -1,5 +1,11 @@
 <ul class="sidebar-nav">
     <li class="sidebar-item">
+        <a href="${pageContext.request.contextPath}/sell-manager/index" class="sidebar-link">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Manager Sell</span>
+        </a>
+    </li>
+    <li class="sidebar-item">
         <a href="${pageContext.request.contextPath}/product/index" class="sidebar-link">
             <i class="fa-solid fa-shirt"></i>
             <span>Manager Product</span>
@@ -34,6 +40,18 @@
         <a href="${pageContext.request.contextPath}/product-detail/index" class="sidebar-link">
             <i class="fa-solid fa-circle-info"></i>
             <span>Manager Product Detail</span>
+        </a>
+    </li>
+    <li class="sidebar-item">
+        <a href="${pageContext.request.contextPath}/bill/index" class="sidebar-link">
+            <i class="fa-solid fa-money-bill"></i>
+            <span>Manager Order</span>
+        </a>
+    </li>
+    <li class="sidebar-item">
+        <a href="${pageContext.request.contextPath}/bill-detail/index" class="sidebar-link">
+            <i class="far fa-money-bill-alt"></i>
+            <span>Manager Order Detail</span>
         </a>
     </li>
 
