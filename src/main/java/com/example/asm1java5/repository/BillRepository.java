@@ -19,10 +19,10 @@ public class BillRepository {
 
     public BillRepository() {
         listBill = new ArrayList<>();
-        listBill.add(new Bill(1, 1, 1, new Date(), 1));
-        listBill.add(new Bill(2, 2, 2, new Date(), 0));
-        listBill.add(new Bill(3, 1, 1, new Date(), 1));
-        listBill.add(new Bill(4, 2, 2, new Date(), 1));
+        listBill.add(new Bill(1, 1, 1 , new Date() ,0.0, 1));
+        listBill.add(new Bill(2, 2, 2, new Date(),0.0, 0));
+        listBill.add(new Bill(3, 1, 1, new Date(),0.0, 1));
+        listBill.add(new Bill(4, 2, 2, new Date(),0.0, 1));
     }
 
     public void save(Bill bill) {
@@ -34,6 +34,15 @@ public class BillRepository {
         for (Bill bill : listBill) {
             if (bill.getId().equals(id)) {
                 bill.setStatus(-1);
+                break;
+            }
+        }
+    }
+
+    public void changeStatusPaySuccess(Integer id) {
+        for (Bill bill : listBill) {
+            if (bill.getId().equals(id)) {
+                bill.setStatus(1);
                 break;
             }
         }
@@ -77,4 +86,6 @@ public class BillRepository {
             }
         }
     }
+
+
 }

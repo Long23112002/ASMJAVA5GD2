@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
 <html>
 <head>
     <title>Manager Order Detail</title>
@@ -17,6 +18,7 @@
 </head>
 
 <body>
+<security:authorize access="hasRole('ADMIN')">
 <div class="wrapper">
     <aside id="sidebar">
         <div class="d-flex">
@@ -28,14 +30,13 @@
             </div>
         </div>
         <jsp:include page=".././base/navbarbase.jsp"></jsp:include>
-        <div class="sidebar-footer">
-            <a href="#" class="sidebar-link">
-                <i class="lni lni-exit"></i>
-                <span>Logout</span>
-            </a>
-        </div>
     </aside>
     <div class="main">
+        <div class="d-flex justify-content-end mx-5 mt-4" >
+            <span  class="text-center" style="color: #000000 ; margin-left:50px ">Hello : ${sessionScope.userName}</span>
+            <br>
+            <span style="color: #000000 ; margin-left: 23px">Role : ${sessionScope.role}</span>
+        </div>
         <nav class="navbar navbar-expand px-4 py-3">
             <form action="#" class="d-none d-sm-inline-block">
 
@@ -94,7 +95,7 @@
                             <td>${colors[productDetailMap[item.idProductDetail].idColor]}</td>
                             <td>${sizes[productDetailMap[item.idProductDetail].idSize]}</td>
                             <td>${item.quantity}</td>
-                            <td>${item.price}</td>
+                            <td>${pricesDetail[productDetailMap[item.idProductDetail].id]}</td>
                             <td>${item.quantity * item.price}</td>
 
 <%--                            <td>--%>
@@ -177,6 +178,7 @@
         </footer>
     </div>
 </div>
+</security:authorize>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>

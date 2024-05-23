@@ -1,5 +1,6 @@
 package com.example.asm1java5.entity;
 
+import com.example.asm1java5.enums.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,7 @@ public class Staff {
     @Size(min = 5, max = 50, message = "Password must be between 5 and 50 characters")
     @NotBlank(message = "Password is required")
     private String password;
+
+    private Role role;
     private Integer status;
 }

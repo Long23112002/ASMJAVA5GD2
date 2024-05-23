@@ -28,47 +28,14 @@
                 <a href="#">ADMIN MANAGER</a>
             </div>
         </div>
-        <ul class="sidebar-nav">
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_product" class="sidebar-link">
-                    <i class="fa-solid fa-shirt"></i>
-                    <span>Manager Product</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_color" class="sidebar-link">
-                    <i class="fa-solid fa-palette"></i>
-                    <span>Manager Color</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_size" class="sidebar-link">
-                    <i class="fa-solid fa-ruler"></i>
-                    <span>Manager Size</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_customer" class="sidebar-link">
-                    <i class="fa-solid fa-person"></i>
-                    <span>Manager Customer</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="${pageContext.request.contextPath}/admin/manager_product_detail" class="sidebar-link">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span>Manager Product Detail</span>
-                </a>
-            </li>
-
-        </ul>
-        <div class="sidebar-footer">
-            <a href="#" class="sidebar-link">
-                <i class="lni lni-exit"></i>
-                <span>Logout</span>
-            </a>
-        </div>
+        <jsp:include page="../../views/base/navbarbase.jsp"></jsp:include>
     </aside>
     <div class="main">
+        <div class="d-flex justify-content-end mx-5 mt-4" >
+            <span  class="text-center" style="color: #000000 ; margin-left:50px ">Hello : ${sessionScope.userName}</span>
+            <br>
+            <span style="color: #000000 ; margin-left: 23px">Role : ${sessionScope.role}</span>
+        </div>
         <nav class="navbar navbar-expand px-4 py-3">
             <form action="#" class="d-none d-sm-inline-block">
 

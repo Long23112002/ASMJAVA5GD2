@@ -29,6 +29,11 @@ public class BillDetailRepository {
         return listBillDetail;
     }
 
+    public void save(BillDetail billDetail) {
+        billDetail.setId(listBillDetail.size() + 1);
+        listBillDetail.add(billDetail);
+    }
+
     public List<BillDetail> findBillByStatus(Integer status) {
         return listBillDetail.stream()
                 .filter(bill -> bill.getStatus().equals(status))

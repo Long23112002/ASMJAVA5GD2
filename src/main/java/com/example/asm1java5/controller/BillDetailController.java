@@ -46,6 +46,9 @@ public class BillDetailController {
         Map<Integer, String> products = listProduct.stream().collect(Collectors.toMap(Product::getId, Product::getName));
         Map<Integer, String> sizes = listSize.stream().collect(Collectors.toMap(Size::getId, Size::getName));
         Map<Integer, String> colors = listColor.stream().collect(Collectors.toMap(Color::getId, Color::getName));
+        Map<Integer, Double> pricesDetail = listProductDetail.stream().collect(Collectors.toMap(ProductDetail::getId, ProductDetail::getPrice));
+
+        model.addAttribute("pricesDetail" , pricesDetail);
         model.addAttribute("listBillDetail", listBillDetail);
         model.addAttribute("products", products);
         model.addAttribute("sizes", sizes);

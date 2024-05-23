@@ -11,8 +11,6 @@
 
 
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet"/>
-    <%--    <link rel="stylesheet" type="text/css"--%>
-    <%--          href="${pageContext.request.contextPath}/src/main/webapp/css/style.css"/>--%>
 
     <link rel="stylesheet" href="../.././css/style.css">
 </head>
@@ -29,14 +27,13 @@
             </div>
         </div>
         <jsp:include page=".././base/navbarbase.jsp"></jsp:include>
-        <div class="sidebar-footer">
-            <a href="#" class="sidebar-link">
-                <i class="lni lni-exit"></i>
-                <span>Logout</span>
-            </a>
-        </div>
     </aside>
     <div class="main">
+        <div class="d-flex justify-content-end mx-5 mt-4" >
+            <span  class="text-center" style="color: #000000 ; margin-left:50px ">Hello : ${sessionScope.userName}</span>
+            <br>
+            <span style="color: #000000 ; margin-left: 23px">Role : ${sessionScope.role}</span>
+        </div>
         <nav class="navbar navbar-expand px-4 py-3">
             <form action="#" class="d-none d-sm-inline-block">
 

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ import java.util.Map;
 @RequestMapping("/staff")
 public class StaffController {
     private final StaffRepository staffRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/index")
     public String index(Model model , @RequestParam(value = "page", defaultValue = "0") int page){
@@ -63,6 +65,7 @@ public class StaffController {
             model.addAttribute("errors", getErrorMessages(result));
             return "staff/create";
         }
+        passwordEncoder.encode(staff.getPassword());
         staffRepository.save(staff);
         return "redirect:/staff/index";
     }

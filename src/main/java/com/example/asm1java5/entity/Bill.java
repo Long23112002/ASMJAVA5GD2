@@ -20,6 +20,7 @@ public class Bill {
     @NotNull(message = "Customer is required")
     private Integer idCustomer;
     private Date dateBuy;
+    private Double total;
     @ValidStatus
     private Integer status;
 }

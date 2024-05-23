@@ -1,9 +1,11 @@
 package com.example.asm1java5.repository;
 
 import com.example.asm1java5.entity.*;
+import com.example.asm1java5.enums.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -16,9 +18,9 @@ public class StaffRepository {
 
     public StaffRepository() {
         listStaff = new ArrayList<>();
-        listStaff.add(new Staff(1, "SF01","Nguyen Hai Long" , "Long", "0888880243", 1));
-        listStaff.add(new Staff(2, "SF02", "Abc", "Test01", "099999999", 1));
-
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        listStaff.add(new Staff(1, "SF01","Nguyen Hai Long" , "long", passwordEncoder.encode("1") , Role.ADMIN, 1));
+        listStaff.add(new Staff(2, "SF02", "abc", "staff", passwordEncoder.encode("1") , Role.STAFF, 1));
     }
 
     public List<Staff> findAll() {
@@ -97,5 +99,14 @@ public class StaffRepository {
 
     public boolean existsByUsernameAndIdNot(String username, Integer id) {
         return listStaff.stream().anyMatch(staff -> staff.getUsername().equals(username) && !staff.getId().equals(id));
+    }
+
+    public Staff findByUsername(String username) {
+        for (Staff staff : listStaff) {
+            if (staff.getUsername().equals(username)) {
+                return staff;
+            }
+        }
+        return null;
     }
 }

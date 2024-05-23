@@ -78,4 +78,31 @@ public class ProductDetailRepository {
         }
         return null;
     }
+
+    public ProductDetail findByCode(String code) {
+        for (ProductDetail productDetail : listProductDetail) {
+            if (productDetail.getCode().equals(code)) {
+                return productDetail;
+            }
+        }
+        return null;
+    }
+
+    public void updateQuantity(String code, Integer quantity) {
+        for (ProductDetail productDetail : listProductDetail) {
+            if (productDetail.getCode().equals(code)) {
+                productDetail.setQuantity(productDetail.getQuantity() - quantity);
+                break;
+            }
+        }
+    }
+
+    public void updateQuantityClear(String code, Integer quantity) {
+        for (ProductDetail productDetail : listProductDetail) {
+            if (productDetail.getCode().equals(code)) {
+                productDetail.setQuantity(productDetail.getQuantity() + quantity);
+                break;
+            }
+        }
+    }
 }

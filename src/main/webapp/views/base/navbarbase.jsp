@@ -1,3 +1,5 @@
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <ul class="sidebar-nav">
     <li class="sidebar-item">
         <a href="${pageContext.request.contextPath}/sell-manager/index" class="sidebar-link">
@@ -42,17 +44,30 @@
             <span>Manager Product Detail</span>
         </a>
     </li>
-    <li class="sidebar-item">
-        <a href="${pageContext.request.contextPath}/bill/index" class="sidebar-link">
-            <i class="fa-solid fa-money-bill"></i>
-            <span>Manager Order</span>
-        </a>
-    </li>
-    <li class="sidebar-item">
-        <a href="${pageContext.request.contextPath}/bill-detail/index" class="sidebar-link">
-            <i class="far fa-money-bill-alt"></i>
-            <span>Manager Order Detail</span>
-        </a>
-    </li>
+
+    <security:authorize access="hasRole('ADMIN')">
+        <li class="sidebar-item">
+            <a href="${pageContext.request.contextPath}/bill/index" class="sidebar-link">
+                <i class="fa-solid fa-money-bill"></i>
+                <span>Manager Order</span>
+            </a>
+        </li>
+    </security:authorize>
+
+    <security:authorize access="hasRole('ADMIN')">
+        <li class="sidebar-item">
+            <a href="${pageContext.request.contextPath}/bill-detail/index" class="sidebar-link">
+                <i class="far fa-money-bill-alt"></i>
+                <span>Manager Order Detail</span>
+            </a>
+        </li>
+    </security:authorize>
+
+
 
 </ul>
+
+<a href="${pageContext.request.contextPath}/auth/logout" class="sidebar-link">
+    <i class="lni lni-exit"></i>
+    <span>Logout</span>
+</a>
