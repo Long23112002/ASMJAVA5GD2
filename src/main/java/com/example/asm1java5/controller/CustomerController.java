@@ -28,7 +28,7 @@ public class CustomerController {
     public String index(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
         int pageSize = 3;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Customer> customerPage = customerRepository.findAllPageable(pageable);
+        Page<Customer> customerPage = customerRepository.findAll(pageable);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", customerPage.getTotalPages());
         model.addAttribute("totalItems", customerPage.getTotalElements());
@@ -38,7 +38,7 @@ public class CustomerController {
 
     @PostMapping("/search")
     public String search(@RequestParam("customerValue") String phone, Model model) {
-        model.addAttribute("listCustomer", customerRepository.findByPhone(phone));
+        model.addAttribute("listCustomer", customerRepository.findByPhoneContainingIgnoreCase(phone));
         return "customer/index";
     }
 
@@ -49,10 +49,10 @@ public class CustomerController {
 
     @PostMapping("/store")
     public String store(@Valid Customer customer, BindingResult result, Model model) {
-        if (customerRepository.exitsByCode(customer.getCode())) {
+        if (customerRepository.existsByCode(customer.getCode())) {
             result.rejectValue("code", "code", "Code is exits");
         }
-        if (customerRepository.exitsByPhone(customer.getPhone())) {
+        if (customerRepository.existsByPhone(customer.getPhone())) {
             result.rejectValue("phone", "phone", "Phone is exits");
         }
         if (result.hasErrors()) {
@@ -65,7 +65,7 @@ public class CustomerController {
 
     @GetMapping("/edit/{id}")
     public String edit(@ModelAttribute("customer") Customer customer, @PathVariable("id") Integer id, Model model) {
-        Customer customerEdit = customerRepository.findById(id);
+        Customer customerEdit = customerRepository.findById(id).get();
         model.addAttribute("customer", customerEdit);
         return "customer/edit";
     }
@@ -82,7 +82,7 @@ public class CustomerController {
             model.addAttribute("errors", getErrorMessages(result));
             return "customer/edit";
         }
-        customerRepository.update(customer);
+        customerRepository.save(customer);
         return "redirect:/customer/index";
     }
 

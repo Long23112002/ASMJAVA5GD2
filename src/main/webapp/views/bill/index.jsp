@@ -93,15 +93,16 @@
 
                             <tr>
                                 <th scope="row">${item.id}</th>
-                                <td>${staffNames[item.idStaff]}</td>
-                                <td>${customerNames[item.idCustomer]}</td>
-                                <td>${phoneCustomer[item.idCustomer]}</td>
+                                <td>${item.staff.name}</td>
+                                <td>${item.customer.name}</td>
+                                <td>${item.customer.phone}</td>
                                 <td>
-                                    <fmt:parseDate value="${item.dateBuy}" pattern="EEE MMM dd HH:mm:ss zzz yyyy"
-                                                   var="parsedDate"/>
-                                    <fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd' 'HH:mm"
-                                                    var="formattedDateTime"/>
-                                        ${formattedDateTime}
+<%--                                    <fmt:parseDate value="${item.dateBuy}" pattern="EEE MMM dd HH:mm:ss zzz yyyy"--%>
+<%--                                                   var="parsedDate"/>--%>
+<%--                                    <fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd' 'HH:mm"--%>
+<%--                                                    var="formattedDateTime"/>--%>
+<%--                                        ${formattedDateTime}--%>
+                                    ${item.dateBuy}
                                 </td>
                                 <td>${item.total}</td>
                                 <td>

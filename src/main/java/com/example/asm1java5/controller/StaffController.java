@@ -32,7 +32,7 @@ public class StaffController {
     public String index(Model model , @RequestParam(value = "page", defaultValue = "0") int page){
         int pageSize = 3;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Staff> staffPage = staffRepository.findAllPageable(pageable);
+        Page<Staff> staffPage = staffRepository.findAll(pageable);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", staffPage.getTotalPages());
         model.addAttribute("totalItems", staffPage.getTotalElements());
@@ -47,7 +47,7 @@ public class StaffController {
 
     @PostMapping("/search")
     public String search(@RequestParam("staffValueSearch") String name, Model model){
-        List<Staff> listStaff = staffRepository.findByName(name);
+        List<Staff> listStaff = staffRepository.findAllByNameContains(name);
         model.addAttribute("listStaff", listStaff);
         return "staff/index";
     }
@@ -73,7 +73,7 @@ public class StaffController {
     @GetMapping("/edit/{id}")
     public String edit(@ModelAttribute("staff") Staff staff,
                        @PathVariable("id") Integer id, Model model){
-        Staff staffEdit = staffRepository.findById(id);
+        Staff staffEdit = staffRepository.findById(id).get();
         model.addAttribute("staff", staffEdit);
         return "staff/edit";
     }
@@ -90,7 +90,7 @@ public class StaffController {
             model.addAttribute("errors", getErrorMessages(result));
             return "staff/edit";
         }
-        staffRepository.update(staff);
+        staffRepository.save(staff);
         return "redirect:/staff/index";
     }
 

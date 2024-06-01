@@ -10,9 +10,6 @@
 
 
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet"/>
-    <%--    <link rel="stylesheet" type="text/css"--%>
-    <%--          href="${pageContext.request.contextPath}/src/main/webapp/css/style.css"/>--%>
-
     <link rel="stylesheet" href="../../css/style.css">
 </head>
 
@@ -58,7 +55,7 @@
                 <div class="d-flex justify-content-end">
                     <form id="colorSearchForm" action="${pageContext.request.contextPath}/product/search" method="post">
                         <div class="input-group">
-                            <input id="colorSearchInput" name="productSearchValue" type="text" class="form-control" placeholder="Search customer" aria-label="Search customer">
+                            <input id="colorSearchInput" name="productSearchValue" type="text" class="form-control" placeholder="Search product" aria-label="Search customer">
                             <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
                         </div>
                     </form>

@@ -34,27 +34,20 @@ public class BillDetailController {
     public String index(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
         int pageSize = 3;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<BillDetail> buildPage = billDetailRepository.findAllPageable(pageable);
+        Page<BillDetail> buildPage = billDetailRepository.findAll(pageable);
         List<BillDetail> listBillDetail = billDetailRepository.findAll();
         List<ProductDetail> listProductDetail = productDetailRepository.findAll();
         List<Bill> listBill = billRepository.findAll();
-        List<Size> listSize = sizeRepository.findAllByStatusActive();
-        List<Color> listColor = colorRepository.findAllByStatusActive();
-        List<Product> listProduct = productRepository.findAllByStatusActive();
-        Map<Integer, ProductDetail> productDetailMap = listProductDetail.stream().collect(Collectors.toMap(ProductDetail::getId, pd -> pd));
-        Map<Integer, Bill> billDetailMap = listBill.stream().collect(Collectors.toMap(Bill::getId, pd -> pd));
-        Map<Integer, String> products = listProduct.stream().collect(Collectors.toMap(Product::getId, Product::getName));
-        Map<Integer, String> sizes = listSize.stream().collect(Collectors.toMap(Size::getId, Size::getName));
-        Map<Integer, String> colors = listColor.stream().collect(Collectors.toMap(Color::getId, Color::getName));
-        Map<Integer, Double> pricesDetail = listProductDetail.stream().collect(Collectors.toMap(ProductDetail::getId, ProductDetail::getPrice));
+        List<Size> listSize = sizeRepository.findByStatus(1);
+        List<Color> listColor = colorRepository.findByStatus(1);
+        List<Product> listProduct = productRepository.findAllByStatus(1);
 
-        model.addAttribute("pricesDetail" , pricesDetail);
+        model.addAttribute("listProductDetail" , listProductDetail);
+        model.addAttribute("listBill" , listBill);
+        model.addAttribute("listSize" , listSize);
+        model.addAttribute("listColor" , listColor);
+        model.addAttribute("listProduct" , listProduct);
         model.addAttribute("listBillDetail", listBillDetail);
-        model.addAttribute("products", products);
-        model.addAttribute("sizes", sizes);
-        model.addAttribute("colors", colors);
-        model.addAttribute("productDetailMap", productDetailMap);
-        model.addAttribute("billDetailMap", billDetailMap);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", buildPage.getTotalPages());
         model.addAttribute("totalItems", buildPage.getTotalElements());

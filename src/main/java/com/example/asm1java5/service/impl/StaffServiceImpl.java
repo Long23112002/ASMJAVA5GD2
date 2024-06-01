@@ -28,7 +28,7 @@ public class StaffServiceImpl implements UserDetailsService {
 
         return User.withUsername(staff.getUsername())
                 .password(staff.getPassword())
-                .roles(staff.getRole().name())
+                .roles(staff.getRole())
                 .build();
     }
 }

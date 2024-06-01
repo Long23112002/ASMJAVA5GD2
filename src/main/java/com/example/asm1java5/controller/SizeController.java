@@ -28,7 +28,7 @@ public class SizeController {
     public String index(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
         int pageSize = 3;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Size> sizePage = sizeRepository.findAllPageable(pageable);
+        Page<Size> sizePage = sizeRepository.findAll(pageable);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", sizePage.getTotalPages());
         model.addAttribute("totalItems", sizePage.getTotalElements());
@@ -38,7 +38,7 @@ public class SizeController {
 
     @PostMapping("/search")
     public String search(@RequestParam("sizeValueSearch") String name, Model model) {
-        List<Size> listSize = sizeRepository.findByName(name);
+        List<Size> listSize = sizeRepository.findByNameContainingIgnoreCase(name);
         model.addAttribute("listSize", listSize);
         return "size/index";
     }
@@ -53,7 +53,7 @@ public class SizeController {
         if (sizeRepository.existsByCode(size.getCode().trim())) {
             result.rejectValue("code", "code", "Code is exits");
         }
-        if (sizeRepository.existsByName(size.getName().trim())) {
+        if (sizeRepository.existsByNameIgnoreCase(size.getName().trim())) {
             result.rejectValue("name", "name", "Name is exits");
         }
         if (result.hasErrors()) {
@@ -66,7 +66,7 @@ public class SizeController {
 
     @GetMapping("/edit/{id}")
     public String edit(@ModelAttribute("size") Size size, @PathVariable("id") Integer id, Model model) {
-        Size sizeEdit = sizeRepository.findById(id);
+        Size sizeEdit = sizeRepository.findById(id).get();
         model.addAttribute("size", sizeEdit);
         return "size/edit";
     }
@@ -76,14 +76,14 @@ public class SizeController {
         if (sizeRepository.existsByCodeAndIdNot(size.getCode().trim(), size.getId())) {
             result.rejectValue("code", "code", "Code is exits");
         }
-        if (sizeRepository.existsByNameAndIdNot(size.getName().trim(), size.getId())) {
+        if (sizeRepository.existsByNameIgnoreCaseAndIdNot(size.getName().trim(), size.getId())) {
             result.rejectValue("name", "name", "Name is exits");
         }
         if (result.hasErrors()) {
             model.addAttribute("errors", getErrorMessages(result));
             return "size/edit";
         }
-        sizeRepository.update(size);
+        sizeRepository.save(size);
         return "redirect:/size/index";
     }
 

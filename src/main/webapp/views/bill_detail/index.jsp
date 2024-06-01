@@ -90,13 +90,13 @@
                     <c:forEach var="item" items="${listBillDetail}" >
                         <tr>
                             <th scope="row">${item.id}</th>
-                            <td>${billDetailMap[item.idBill].id}</td>
-                            <td>${products[productDetailMap[item.idProductDetail].idProduct]}</td>
-                            <td>${colors[productDetailMap[item.idProductDetail].idColor]}</td>
-                            <td>${sizes[productDetailMap[item.idProductDetail].idSize]}</td>
+                            <td>${item.bill.id}</td>
+                            <td>${item.productDetail.product.name}</td>
+                            <td>${item.productDetail.color.name}</td>
+                            <td>${item.productDetail.size.name}</td>
                             <td>${item.quantity}</td>
-                            <td>${pricesDetail[productDetailMap[item.idProductDetail].id]}</td>
-                            <td>${item.quantity * item.price}</td>
+                            <td>${item.productDetail.price}</td>
+                            <td>${item.price}</td>
 
 <%--                            <td>--%>
 <%--                                <c:choose>--%>

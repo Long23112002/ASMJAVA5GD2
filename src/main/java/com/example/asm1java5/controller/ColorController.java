@@ -31,7 +31,7 @@ public class ColorController {
     public String index(Model model , @RequestParam(value = "page", defaultValue = "0") int page){
         int pageSize = 3;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Color> colorPage = colorRepository.findAllPageable(pageable);
+        Page<Color> colorPage = colorRepository.findAll(pageable);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", colorPage.getTotalPages());
         model.addAttribute("totalItems", colorPage.getTotalElements());
@@ -41,7 +41,7 @@ public class ColorController {
 
     @PostMapping("/search")
     public String search(@RequestParam("colorSearch") String name, Model model){
-        model.addAttribute("listColor", colorRepository.findByName(name));
+        model.addAttribute("listColor", colorRepository.findByNameContainingIgnoreCase(name));
         return "color/index";
     }
 
@@ -52,12 +52,12 @@ public class ColorController {
 
     @PostMapping("/store")
     public String store(@Valid Color color , BindingResult result , Model model){
-        if (colorRepository.exitsByCode(color.getCode())){
+        if (colorRepository.existsByCodeIgnoreCase(color.getCode())){
             result.rejectValue("code", "code", "Color code is exits");
         }
 
 
-        if(colorRepository.exitsByName(color.getName().trim())){
+        if(colorRepository.existsByNameIgnoreCase(color.getName().trim())){
             result.rejectValue("name", "name", "Color name is exits");
         }
 
@@ -72,24 +72,24 @@ public class ColorController {
     @GetMapping("/edit/{id}")
     public String edit(@ModelAttribute("color") Color color,
                        @PathVariable("id") Integer id, Model model){
-        Color colorEdit = colorRepository.findById(id);
+        Color colorEdit = colorRepository.findById(id).get();
         model.addAttribute("color", colorEdit);
         return "color/edit";
     }
 
     @PostMapping("/update/{id}")
     public String update( @Valid Color color, BindingResult result, Model model){
-        if (colorRepository.existsByCodeAndIdNot(color.getCode().trim() , color.getId())){
+        if (colorRepository.existsByCodeIgnoreCaseAndIdNot(color.getCode().trim() , color.getId())){
             result.rejectValue("code", "code", "Color code is exits");
         }
-        if(colorRepository.existsByNameAndIdNot(color.getName().trim() , color.getId())){
+        if(colorRepository.existsByNameIgnoreCaseAndIdNot(color.getName().trim() , color.getId())){
             result.rejectValue("name", "name", "Color name is exits");
         }
         if (result.hasErrors()){
             model.addAttribute("errors", getErrorMessages(result));
             return "color/edit";
         }
-        colorRepository.update(color);
+        colorRepository.save(color);
         return "redirect:/color/index";
     }
 

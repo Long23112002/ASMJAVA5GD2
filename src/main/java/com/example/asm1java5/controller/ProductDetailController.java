@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,32 +44,26 @@ public class ProductDetailController {
     public String index(Model model , @RequestParam(value = "page", defaultValue = "0") int page){
         int pageSize = 3;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<ProductDetail> productDetailPage =productDetailRepository.findAllPageable(pageable);
-        List<Product> listProduct = productRepository.findAllByStatusActive();
-        List<Color> listColor = colorRepository.findAllByStatusActive();
-        List<Size> listSize = sizeRepository.findAllByStatusActive();
-        Map<Integer, String> productNames = listProduct.stream().collect(Collectors.toMap(Product::getId, Product::getName));
-        Map<Integer, String> colorNames = listColor.stream().collect(Collectors.toMap(Color::getId, Color::getName));
-        Map<Integer, String> sizeNames = listSize.stream().collect(Collectors.toMap(Size::getId, Size::getName));
-
+        Page<ProductDetail> productDetailPage = productDetailRepository.findAllByStatus(1,pageable);
+        List<Product> listProduct = productRepository.findAllByStatus(1);
+        List<Color> listColor = colorRepository.findByStatus(1);
+        List<Size> listSize = sizeRepository.findByStatus(1);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productDetailPage.getTotalPages());
         model.addAttribute("totalItems", productDetailPage.getTotalElements());
         model.addAttribute("listProductDetail", productDetailPage.getContent());
-        model.addAttribute("productNames", productNames);
-        model.addAttribute("colorNames", colorNames);
-        model.addAttribute("sizeNames", sizeNames);
         model.addAttribute("listColor", listColor);
         model.addAttribute("listSize", listSize);
         model.addAttribute("listProduct", listProduct);
         return "product_detail/index";
     }
 
+
     @GetMapping("/create")
     public String create(@ModelAttribute("productDetail") ProductDetail productDetail, Model model) {
-        List<Product> listProduct = productRepository.findAll();
-        List<Color> listColor = colorRepository.findAll();
-        List<com.example.asm1java5.entity.Size> listSize = sizeRepository.findAll();
+        List<Product> listProduct = productRepository.findAllByStatus(1);
+        List<Color> listColor = colorRepository.findByStatus(1);
+        List<com.example.asm1java5.entity.Size> listSize = sizeRepository.findByStatus(1);
         model.addAttribute("listColor", listColor);
         model.addAttribute("listSize", listSize);
         model.addAttribute("listProduct", listProduct);
@@ -77,9 +73,9 @@ public class ProductDetailController {
     @PostMapping("/store")
     public String store(@Valid ProductDetail productDetail, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            List<Product> listProduct = productRepository.findAll();
-            List<Color> listColor = colorRepository.findAll();
-            List<com.example.asm1java5.entity.Size> listSize = sizeRepository.findAll();
+            List<Product> listProduct = productRepository.findAllByStatus(1);
+            List<Color> listColor = colorRepository.findByStatus(1);
+            List<com.example.asm1java5.entity.Size> listSize = sizeRepository.findByStatus(1);
             model.addAttribute("listColor", listColor);
             model.addAttribute("listSize", listSize);
             model.addAttribute("listProduct", listProduct);
@@ -93,10 +89,10 @@ public class ProductDetailController {
 
     @GetMapping("/edit/{id}")
     public String edit(@ModelAttribute("productDetail") ProductDetail productDetail, @PathVariable("id") Integer id, Model model) {
-        ProductDetail productDetailEdit = productDetailRepository.findById(id);
+        ProductDetail productDetailEdit = productDetailRepository.findById(Long.valueOf(id)).get();
         List<Product> listProduct = productRepository.findAll();
         List<Color> listColor = colorRepository.findAll();
-        List<com.example.asm1java5.entity.Size> listSize = sizeRepository.findAll();
+        List<com.example.asm1java5.entity.Size> listSize = sizeRepository.findByStatus(1);
         model.addAttribute("listColor", listColor);
         model.addAttribute("listSize", listSize);
         model.addAttribute("listProduct", listProduct);
@@ -110,46 +106,51 @@ public class ProductDetailController {
             model.addAttribute("errors", getErrorMessages(result));
             return "product_detail/edit";
         }
-        productDetailRepository.update(productDetail);
+        productDetailRepository.save(productDetail);
         return "redirect:/product-detail/index";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        productDetailRepository.deleteById(id);
+        productDetailRepository.deleteById(Long.valueOf(id));
         return "redirect:/product-detail/index";
     }
 
 
     @PostMapping("/filter")
-    public String filter(@RequestParam(required = false) Integer searchProduct, @RequestParam(required = false) Integer searchSize, @RequestParam(required = false) Integer searchColor, Model model) {
+    public String filter(@RequestParam(required = false) Integer searchProduct, @RequestParam(required = false) Integer searchSize,
+                         @RequestParam(required = false) Integer searchColor, Model model) {
 
-        List<ProductDetail> filteredProductDetails = productDetailRepository.findAll();
+        List<ProductDetail> filteredProductDetails;
 
         if (searchProduct != null && searchProduct != 0) {
-            filteredProductDetails = filteredProductDetails.stream().filter(pd -> pd.getIdProduct().equals(searchProduct)).collect(Collectors.toList());
+            if (searchSize != null && searchSize != 0) {
+                if (searchColor != null && searchColor != 0) {
+                    filteredProductDetails = productDetailRepository.findAllByProductIdAndSizeIdAndColorId(searchSize, searchColor, searchProduct);
+                } else {
+                    filteredProductDetails = productDetailRepository.findAllByProductIdAndSizeId(searchProduct, searchSize);
+                }
+            } else if (searchColor != null && searchColor != 0) {
+                filteredProductDetails = productDetailRepository.findAllByProductIdAndColorId(searchProduct, searchColor);
+            } else {
+                filteredProductDetails = productDetailRepository.findAllByProductId(searchProduct);
+            }
+        } else if (searchSize != null && searchSize != 0) {
+            if (searchColor != null && searchColor != 0) {
+                filteredProductDetails = productDetailRepository.findAllBySizeIdAndColorId(searchSize, searchColor);
+            } else {
+                filteredProductDetails = productDetailRepository.findAllBySizeId(searchSize);
+            }
+        } else if (searchColor != null && searchColor != 0) {
+            filteredProductDetails = productDetailRepository.findAllByColorId(searchColor);
+        } else {
+            filteredProductDetails = productDetailRepository.findAll();
         }
 
-        if (searchSize != null && searchSize != 0) {
-            filteredProductDetails = filteredProductDetails.stream().filter(pd -> pd.getIdSize().equals(searchSize)).collect(Collectors.toList());
-        }
 
-        if (searchColor != null && searchColor != 0) {
-            filteredProductDetails = filteredProductDetails.stream().filter(pd -> pd.getIdColor().equals(searchColor)).collect(Collectors.toList());
-        }
-
-
-        List<Product> listProduct = productRepository.findAll();
-        List<Color> listColor = colorRepository.findAll();
-        List<Size> listSize = sizeRepository.findAll();
-
-        Map<Integer, String> productNames = listProduct.stream().collect(Collectors.toMap(Product::getId, Product::getName));
-        Map<Integer, String> colorNames = listColor.stream().collect(Collectors.toMap(Color::getId, Color::getName));
-        Map<Integer, String> sizeNames = listSize.stream().collect(Collectors.toMap(Size::getId, Size::getName));
-
-        model.addAttribute("productNames", productNames);
-        model.addAttribute("colorNames", colorNames);
-        model.addAttribute("sizeNames", sizeNames);
+        List<Product> listProduct = productRepository.findAllByStatus(1);
+        List<Color> listColor = colorRepository.findByStatus(1);
+        List<Size> listSize = sizeRepository.findByStatus(1);
 
         model.addAttribute("listColor", listColor);
         model.addAttribute("listSize", listSize);
@@ -160,6 +161,7 @@ public class ProductDetailController {
     }
 
 
+
     public static Map<String, String> getErrorMessages(BindingResult bindingResult) {
         Map<String, String> errors = new HashMap<>();
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
@@ -168,3 +170,5 @@ public class ProductDetailController {
         return errors;
     }
 }
+
+

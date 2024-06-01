@@ -103,8 +103,8 @@
                         <th scope="col">Product</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Price</th>
-                        <th scope="col">Size</th>
                         <th scope="col">Color</th>
+                        <th scope="col">Size</th>
                         <th scope="col">Status</th>
                         <th scope="col">Functions</th>
                     </tr>
@@ -115,11 +115,11 @@
                         <tr>
                             <th scope="row">${item.id}</th>
                             <td>${item.code}</td>
-                            <td>${productNames[item.idProduct]}</td>
+                            <td>${item.product.name}</td>
                             <td>${item.quantity}</td>
                             <td>${item.price}</td>
-                            <td>${colorNames[item.idSize]}</td>
-                            <td>${sizeNames[item.idColor]}</td>
+                            <td>${item.color.name}</td>
+                            <td>${item.size.name}</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${item.status eq 1}">

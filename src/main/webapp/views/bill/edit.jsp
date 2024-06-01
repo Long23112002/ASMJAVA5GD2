@@ -64,13 +64,13 @@
                                 <form action="${pageContext.request.contextPath}/bill/update/${bill.id}" method="post"  >
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Staff</label>
-                                        <select id="name" class="form-select" name="idStaff" aria-label="Default select example">
+                                        <select id="name" class="form-select" name="staff" aria-label="Default select example">
                                             <c:forEach items="${listStaff}" var="staff">
                                                 <option value="${staff.id}" <c:if test="${bill.idStaff == staff.id ? 'selected' : ''}"> </c:if> >${staff.name}</option>
                                             </c:forEach>
                                         </select>
                                         <c:if test="${ not empty errors}">
-                                            <span id="code-error" class="text-danger">${errors['idStaff']}</span>
+                                            <span id="code-error" class="text-danger">${errors['staff']}</span>
                                         </c:if>
                                     </div>
 

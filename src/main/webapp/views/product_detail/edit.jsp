@@ -70,13 +70,13 @@
 
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Product</label>
-                                           <select id="name" class="form-select" name="idProduct" aria-label="Default select example">
+                                           <select id="name" class="form-select" name="product" aria-label="Default select example">
                                                 <c:forEach items="${listProduct}" var="product">
-                                                    <option value="${product.id}" <c:if test="${productDetail.idProduct == product.id ? 'selected' : ''}"> </c:if> >${product.name}</option>
+                                                    <option value="${product.id}" <c:if test="${productDetail.color.id == product.id ? 'selected' : ''}"> </c:if> >${product.name}</option>
                                                 </c:forEach>
                                           </select>
                                         <c:if test="${ not empty errors}">
-                                            <span id="code-error" class="text-danger">${errors['idProduct']}</span>
+                                            <span id="code-error" class="text-danger">${errors['product']}</span>
                                         </c:if>
                                     </div>
 
@@ -99,35 +99,35 @@
 
                                     <div class="mb-3">
                                         <label for="size" class="form-label">Size</label>
-                                        <select id="size" class="form-select" name="idSize" aria-label="Default select example">
+                                        <select id="size" class="form-select" name="size" aria-label="Default select example">
                                             <option value="">Choose Select</option>
                                             <c:forEach items="${listSize}" var="size">
-                                                <option value="${size.id}" <c:if test="${productDetail.idSize == size.id}">selected</c:if>>${size.name}</option>
+                                                <option value="${size.id}" <c:if test="${productDetail.size.id == size.id}">selected</c:if>>${size.name}</option>
                                             </c:forEach>
                                         </select>
                                         <c:if test="${not empty errors['idSize']}">
-                                            <span id="size-error" class="text-danger">${errors['idSize']}</span>
+                                            <span id="size-error" class="text-danger">${errors['size']}</span>
                                         </c:if>
                                     </div>
 
 
                                     <div class="mb-3">
                                         <label for="color" class="form-label">Color</label>
-                                        <select id="color" class="form-select" name="idColor" aria-label="Default select example">
+                                        <select id="color" class="form-select" name="color" aria-label="Default select example">
                                             <c:forEach items="${listColor}" var="color">
-                                            <option value="${color.id}" <c:if test="${productDetail.idColor == color.id ? 'selected' : ''}"> </c:if> >${color.name}</option>
+                                            <option value="${color.id}" <c:if test="${productDetail.color.id == color.id ? 'selected' : ''}"> </c:if> >${color.name}</option>
                                             </c:forEach>
 
                                         </select>
                                         <c:if test="${ not empty errors}">
-                                            <span id="code-error" class="text-danger">${errors['idColor']}</span>
+                                            <span id="code-error" class="text-danger">${errors['color']}</span>
                                         </c:if>
                                     </div>
 
                                     <div class="mb-3">
                                         <select class="form-select" name="status" aria-label="Default select example">
-                                            <option value="1" <c:if test="${color.status eq 1}">selected</c:if>>Active</option>
-                                            <option value="0" <c:if test="${color.status != 1}">selected</c:if>>No Active</option>
+                                            <option value="1" <c:if test="${color.status == 1}">selected</c:if>>Active</option>
+                                            <option value="0" <c:if test="${color.status == 0}">selected</c:if>>No Active</option>
                                         </select>
                                         <span id="status-error" class="text-danger"></span>
                                     </div>

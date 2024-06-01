@@ -33,15 +33,9 @@ public class BillController {
     public String index(Model model ,  @RequestParam(value = "page", defaultValue = "0") int page) {
         int pageSize = 3;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Bill> billPage = billRepository.findAllPageable(pageable);
-        List<Staff> listStaff = staffRepository.findAllByStatusActive();
-        List<Customer> listCustomer = customerRepository.findAllByStatusActive();
-        Map<Integer, String> staffNames = listStaff.stream().collect(Collectors.toMap(Staff::getId, Staff::getName));
-        Map<Integer, String> customerNames = listCustomer.stream().collect(Collectors.toMap(Customer::getId, Customer::getName));
-        Map<Integer, String> phoneCustomer = listCustomer.stream().collect(Collectors.toMap(Customer::getId, Customer::getPhone));
-        model.addAttribute("staffNames", staffNames);
-        model.addAttribute("customerNames", customerNames);
-        model.addAttribute("phoneCustomer", phoneCustomer);
+        Page<Bill> billPage = billRepository.findAll(pageable);
+        List<Staff> listStaff = staffRepository.findAllByStatus(1);
+        List<Customer> listCustomer = customerRepository.findAll();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", billPage.getTotalPages());
         model.addAttribute("totalItems", billPage.getTotalElements());
@@ -52,9 +46,9 @@ public class BillController {
     @GetMapping("/edit/{id}")
     public String edit(@ModelAttribute("bill") Bill bill,
                        @PathVariable("id") Integer id, Model model){
-        List<Customer> listCustomer = customerRepository.findAllByStatusActive();
-        List<Staff> listStaff = staffRepository.findAllByStatusActive();
-        Bill billEdit = billRepository.findById(id);
+        List<Customer> listCustomer = customerRepository.findAll();
+        List<Staff> listStaff = staffRepository.findAllByStatus(1);
+        Bill billEdit = billRepository.findById(Long.valueOf(id)).get();
         model.addAttribute("listCustomer", listCustomer);
         model.addAttribute("listStaff", listStaff);
         model.addAttribute("bill", billEdit);
@@ -67,7 +61,7 @@ public class BillController {
             model.addAttribute("errors", getErrorMessages(result));
             return "bill/edit";
         }
-        billRepository.update(bill);
+        billRepository.save(bill);
         return "redirect:/bill/index";
     }
 
@@ -75,24 +69,20 @@ public class BillController {
     public String filter(@RequestParam Integer statusSearch, Model model) {
         if(statusSearch == -1) {
             List<Bill> listBill = billRepository.findAll();
-            List<Staff> listStaff = staffRepository.findAllByStatusActive();
-            List<Customer> listCustomer = customerRepository.findAllByStatusActive();
-            Map<Integer, String> staffNames = listStaff.stream().collect(Collectors.toMap(Staff::getId, Staff::getName));
-            Map<Integer, String> customerNames = listCustomer.stream().collect(Collectors.toMap(Customer::getId, Customer::getName));
-            model.addAttribute("staffNames", staffNames);
-            model.addAttribute("customerNames", customerNames);
+            List<Staff> listStaff = staffRepository.findAllByStatus(1);
+            List<Customer> listCustomer = customerRepository.findAllByStatus(1);
+            model.addAttribute("listStaff" , listStaff);
+            model.addAttribute("listCustomer" , listCustomer);
             model.addAttribute("valueSearch" , statusSearch);
             model.addAttribute("listBill",listBill);
             return "bill/index";
         }else {
-            List<Bill> listBillSearch = billRepository.findBillByStatus(statusSearch);
-            List<Staff> listStaff = staffRepository.findAllByStatusActive();
-            List<Customer> listCustomer = customerRepository.findAllByStatusActive();
-            Map<Integer, String> staffNames = listStaff.stream().collect(Collectors.toMap(Staff::getId, Staff::getName));
-            Map<Integer, String> customerNames = listCustomer.stream().collect(Collectors.toMap(Customer::getId, Customer::getName));
+            List<Bill> listBillSearch = billRepository.findAllByStatus(statusSearch);
+            List<Staff> listStaff = staffRepository.findAllByStatus(1);
+            List<Customer> listCustomer = customerRepository.findAll();
             model.addAttribute("valueSearch" , statusSearch);
-            model.addAttribute("staffNames", staffNames);
-            model.addAttribute("customerNames", customerNames);
+            model.addAttribute("listStaff" , listStaff);
+            model.addAttribute("listCustomer" , listCustomer);
             model.addAttribute("listBill",listBillSearch);
             return "bill/index";
         }

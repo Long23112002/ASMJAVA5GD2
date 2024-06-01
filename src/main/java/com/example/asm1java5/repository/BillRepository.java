@@ -1,91 +1,25 @@
 package com.example.asm1java5.repository;
 
 import com.example.asm1java5.entity.Bill;
-import com.example.asm1java5.entity.Color;
-import com.example.asm1java5.entity.Customer;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
-public class BillRepository {
-    private final List<Bill> listBill;
+public interface BillRepository extends JpaRepository<Bill, Long> {
+    List<Bill> findAllByStatus(int status);
 
-    public BillRepository() {
-        listBill = new ArrayList<>();
-        listBill.add(new Bill(1, 1, 1 , new Date() ,0.0, 1));
-        listBill.add(new Bill(2, 2, 2, new Date(),0.0, 0));
-        listBill.add(new Bill(3, 1, 1, new Date(),0.0, 1));
-        listBill.add(new Bill(4, 2, 2, new Date(),0.0, 1));
-    }
+    @Transactional
+    @Modifying
+    @Query("UPDATE Bill b SET b.status = CASE WHEN b.status = 0 THEN 1 ELSE 2 END WHERE b.id = :id")
+    void changeStatus(Long id);
 
-    public void save(Bill bill) {
-        bill.setId(listBill.size() + 1);
-        listBill.add(bill);
-    }
-
-    public void changeStatus(Integer id) {
-        for (Bill bill : listBill) {
-            if (bill.getId().equals(id)) {
-                bill.setStatus(-1);
-                break;
-            }
-        }
-    }
-
-    public void changeStatusPaySuccess(Integer id) {
-        for (Bill bill : listBill) {
-            if (bill.getId().equals(id)) {
-                bill.setStatus(1);
-                break;
-            }
-        }
-    }
-
-    public List<Bill> findAll() {
-        return listBill;
-    }
-
-    public List<Bill> findBillByStatus(Integer status) {
-        return listBill.stream()
-                .filter(bill -> bill.getStatus().equals(status))
-                .collect(Collectors.toList());
-    }
-
-    public Page<Bill> findAllPageable(Pageable pageable) {
-        int pageSize = pageable.getPageSize();
-        int pageNumber = pageable.getPageNumber();
-        int startIndex = pageNumber * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, listBill.size());
-        List<Bill> pageContent = listBill.subList(startIndex, endIndex);
-        return new PageImpl<>(pageContent, pageable, listBill.size());
-    }
-
-    public Bill findById(Integer id) {
-        for (Bill bill : listBill) {
-            if (bill.getId().equals(id)) {
-                return bill;
-            }
-        }
-        return null;
-    }
-
-    public void update(Bill bill) {
-        for (Bill b : listBill) {
-            if (b.getId().equals(bill.getId())) {
-                b.setIdStaff(bill.getIdStaff());
-                b.setIdCustomer(bill.getIdCustomer());
-                b.setStatus(bill.getStatus());
-                break;
-            }
-        }
-    }
-
+    @Modifying
+    @Query("UPDATE Bill b SET b.status = 1 WHERE b.id = :id")
+    void changeStatusPaySuccess(Integer id);
 
 }

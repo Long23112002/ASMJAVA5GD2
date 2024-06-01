@@ -1,108 +1,53 @@
 package com.example.asm1java5.repository;
 
-import com.example.asm1java5.entity.Product;
 import com.example.asm1java5.entity.ProductDetail;
-import com.example.asm1java5.entity.Size;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
-public class ProductDetailRepository {
-    private final List<ProductDetail> listProductDetail;
+public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long> {
+    Page<ProductDetail> findAllByStatus(int status, Pageable pageable);
 
-    public ProductDetailRepository() {
-        listProductDetail = new ArrayList<>();
-        listProductDetail.add(new ProductDetail(1, "PD01", 1, 1, 1, 1.0, 100000 , 1));
-        listProductDetail.add(new ProductDetail(2, "PD02", 2, 2, 2, 2.0, 200000, 0));
-    }
+    List<ProductDetail> findAllByProductId(int id);
 
-    public List<ProductDetail> findAll() {
-        return listProductDetail;
-    }
+    List<ProductDetail> findAllBySizeId(int id);
 
-    public List<ProductDetail> findAllByStatusActive(){
-        return listProductDetail.stream()
-                .filter(productDetail -> productDetail.getStatus() == 1)
-                .collect(Collectors.toList());
-    }
+    List<ProductDetail> findAllByColorId(int id);
 
-    public Page<ProductDetail> findAllPageable(Pageable pageable) {
-        int pageSize = pageable.getPageSize();
-        int pageNumber = pageable.getPageNumber();
-        int startIndex = pageNumber * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, listProductDetail.size());
-        List<ProductDetail> pageContent = listProductDetail.subList(startIndex, endIndex);
-        return new PageImpl<>(pageContent, pageable, listProductDetail.size());
-    }
+    List<ProductDetail> findAllByProductIdAndSizeIdAndColorId(Integer idSize, Integer idColor, Integer product);
 
-    public void save(ProductDetail productDetail) {
-        productDetail.setId(this.listProductDetail.size() + 1);
-        this.listProductDetail.add(productDetail);
-    }
+    List<ProductDetail> findAllByProductIdAndSizeId(int productId, int idSize);
 
-    public void deleteById(Integer id) {
-        for (ProductDetail productDetail : listProductDetail) {
-            if (productDetail.getId().equals(id)) {
-                listProductDetail.remove(productDetail);
-                break;
-            }
-        }
-    }
+    List<ProductDetail> findAllByProductIdAndColorId(int productId, int idColor);
 
-    public void update(ProductDetail productDetail) {
-        for (ProductDetail c : listProductDetail) {
-            if (c.getId().equals(productDetail.getId())) {
-                c.setCode(productDetail.getCode());
-                c.setIdProduct(productDetail.getIdProduct());
-                c.setIdColor(productDetail.getIdColor());
-                c.setIdSize(productDetail.getIdSize());
-                c.setPrice(productDetail.getPrice());
-                c.setQuantity(productDetail.getQuantity());
-                c.setStatus(productDetail.getStatus());
-                break;
-            }
-        }
-    }
+    List<ProductDetail> findAllBySizeIdAndColorId(int size , int color);
 
-    public ProductDetail findById(Integer id) {
-        for (ProductDetail productDetail : listProductDetail) {
-            if (productDetail.getId().equals(id)) {
-                return productDetail;
-            }
-        }
-        return null;
-    }
+    List<ProductDetail> findAllByStatus(int status);
 
-    public ProductDetail findByCode(String code) {
-        for (ProductDetail productDetail : listProductDetail) {
-            if (productDetail.getCode().equals(code)) {
-                return productDetail;
-            }
-        }
-        return null;
-    }
+    ProductDetail findByCode(String code);
 
-    public void updateQuantity(String code, Integer quantity) {
-        for (ProductDetail productDetail : listProductDetail) {
-            if (productDetail.getCode().equals(code)) {
-                productDetail.setQuantity(productDetail.getQuantity() - quantity);
-                break;
-            }
-        }
-    }
+    @Modifying
+    @Query("UPDATE ProductDetail pd SET pd.quantity = pd.quantity - :quantity WHERE pd.id = :id AND pd.quantity >= :quantity")
+    void updateQuantity(Integer id, Integer quantity);
 
-    public void updateQuantityClear(String code, Integer quantity) {
-        for (ProductDetail productDetail : listProductDetail) {
-            if (productDetail.getCode().equals(code)) {
-                productDetail.setQuantity(productDetail.getQuantity() + quantity);
-                break;
-            }
-        }
-    }
+    @Modifying
+    @Transactional
+    @Query("UPDATE ProductDetail pd SET pd.quantity = pd.quantity + :quantity WHERE pd.code = :code")
+    void updateQuantityClear(String code, int quantity);
+
+    Page<ProductDetail> findAllByProductIdAndSizeIdAndColorId(Integer productId, Integer sizeId, Integer colorId, Pageable pageable);
+    Page<ProductDetail> findAllByProductIdAndSizeId(Integer productId, Integer sizeId, Pageable pageable);
+    Page<ProductDetail> findAllByProductIdAndColorId(Integer productId, Integer colorId, Pageable pageable);
+    Page<ProductDetail> findAllByProductId(Integer productId, Pageable pageable);
+    Page<ProductDetail> findAllBySizeIdAndColorId(Integer sizeId, Integer colorId, Pageable pageable);
+    Page<ProductDetail> findAllBySizeId(Integer sizeId, Pageable pageable);
+    Page<ProductDetail> findAllByColorId(Integer colorId, Pageable pageable);
+    Page<ProductDetail> findAll(Pageable pageable);
 }

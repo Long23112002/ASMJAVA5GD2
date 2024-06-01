@@ -247,11 +247,21 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-9 mt-2">
+                                                    <c:choose>
+                                                        <c:when test="${empty customerInfo}">
+                                                            <a class="mx-2"
+                                                               href="#" >
+                                                                <button disabled class="btn btn-outline-success">Create Order</button>
+                                                            </a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a class="mx-2"
+                                                               href="${pageContext.request.contextPath}/sell-manager/create-order">
+                                                                <button class="btn btn-outline-success">Create Order</button>
+                                                            </a>
+                                                        </c:otherwise>
+                                                    </c:choose>
 
-                                                    <a class="mx-2"
-                                                       href="${pageContext.request.contextPath}/sell-manager/create-order">
-                                                        <button class="btn btn-outline-success">Create Order</button>
-                                                    </a>
                                                     <c:if test="${ empty idOrderChose}">
                                                         <a href="#">
                                                             <button disabled class="btn btn-outline-danger">Cancel
@@ -261,7 +271,7 @@
                                                     </c:if>
                                                     <c:if test="${not empty idOrderChose }">
                                                         <a href="${pageContext.request.contextPath}/sell-manager/cancel-order/${idOrderChose}">
-                                                            <button class="btn btn-outline-danger">Cancel Order</button>
+                                                            <button onclick="return confirm('Are you sure you want to cancel order?')" class="btn btn-outline-danger">Cancel Order</button>
                                                         </a>
                                                     </c:if>
 
@@ -299,9 +309,9 @@
                                                     <c:forEach items="${billList}" var="item">
                                                         <tr>
                                                             <th scope="row">${item.id}</th>
-                                                            <td>${staffNames[item.idStaff]}</td>
-                                                            <td>${customerNames[item.idCustomer]}</td>
-                                                            <td>${customerInfo.phone}</td>
+                                                            <td>${item.staff.name}</td>
+                                                            <td>${item.customer.name}</td>
+                                                            <td>${item.customer.phone}</td>
                                                             <td>${item.total}</td>
                                                             <td>
                                                                 <fmt:parseDate value="${item.dateBuy}"
@@ -326,9 +336,24 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td>
-                                                                <a href="${pageContext.request.contextPath}/sell-manager/choose-oder/${item.id}">
-                                                                    <button class="btn btn-warning">Chose</button>
-                                                                </a></td>
+                                                                <c:choose>
+                                                                    <c:when test="${item.status eq 0}">
+                                                                        <a href="${pageContext.request.contextPath}/sell-manager/choose-oder/${item.id}">
+                                                                            <button class="btn btn-warning">Chose</button>
+                                                                        </a>
+                                                                    </c:when>
+                                                                    <c:when test="${item.status eq 1}">
+                                                                        <a  href="#">
+                                                                            <button disabled class="btn btn-warning">Chose</button>
+                                                                        </a>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <a  href="#">
+                                                                            <button disabled class="btn btn-warning">Chose</button>
+                                                                        </a>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
                                                         </tr>
                                                     </c:forEach>
                                                 </c:if>
@@ -356,7 +381,7 @@
                                                         </c:if>
                                                         <c:if test="${not empty sessionScope.idOrderChose}">
                                                             <a href="${pageContext.request.contextPath}/sell-manager/clear-all"
-                                                               class="btn btn-danger">Clear All Cart</a>
+                                                               ><button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete everything in the cart?')" >Clear All Cart</button></a>
                                                         </c:if>
 
                                                     </div>
@@ -379,30 +404,28 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <c:if test="${empty listCart}">
+                                                <c:if test="${empty cartItems}">
                                                     <tr>
                                                         <td colspan="9" class="text-center">No data Cart</td>
                                                     </tr>
                                                 </c:if>
 
 
-                                                <c:if test="${not empty listCart}">
+                                                <c:if test="${not empty cartItems}">
 
-                                                    <c:forEach items="${listCart}" var="item">
+                                                    <c:forEach items="${cartItems}" var="item">
                                                         <tr>
                                                             <th scope="row">${item.id}</th>
-                                                            <c:forEach items="${item.productDetailList}" var="product">
-                                                                <td>${product.code}</td>
-                                                                <td>${productNames[product.idProduct]}</td>
-                                                                <td>${sizeNames[product.idColor]}</td>
-                                                                <td>${colorNames[product.idSize]}</td>
-                                                                <td>${item.price}</td>
-                                                            </c:forEach>
+                                                            <td>${item.productDetail.code}</td>
+                                                            <td>${item.productDetail.product.name}</td>
+                                                            <td>${item.productDetail.color.name}</td>
+                                                            <td>${item.productDetail.size.name}</td>
+                                                            <td>${item.productDetail.price}</td>
                                                             <td>${item.quantity}</td>
-                                                            <td>${item.total}</td>
+                                                            <td>${item.price}</td>
                                                             <td>
                                                                 <a href="${pageContext.request.contextPath}/sell-manager/delete-cart/${item.id}">
-                                                                    <button class="btn btn-danger">Delete</button>
+                                                                    <button  onclick="return confirm('Are you sure you want to delete product in the cart?')" class="btn btn-danger">Delete</button>
                                                                 </a>
                                                             </td>
                                                         </tr>
@@ -422,17 +445,6 @@
 
                                         <div class="row">
                                             <div class="col-6">
-                                                <form class="row">
-                                                    <div class="col-8" style="margin-top: 23px">
-                                                        <input placeholder="Search name product" type="text"
-                                                               class="form-control" id="search"
-                                                               name="nameProductSearch">
-
-                                                    </div>
-                                                    <div class="col-4" style="margin-top: 23px">
-                                                        <button class="btn btn-secondary">Search</button>
-                                                    </div>
-                                                </form>
                                             </div>
                                             <div class="col-6">
                                                 <form method="post"
@@ -446,7 +458,7 @@
                                                                     All
                                                                 </option>
                                                                 <c:forEach items="${listProduct}" var="product">
-                                                                    <option value="${product.id}" ${product.id == idProduct ? 'selected' : ''}>
+                                                                    <option value="${product.id}" ${product.id == selectedProduct ? 'selected' : ''}>
                                                                             ${product.name}
                                                                     </option>
                                                                 </c:forEach>
@@ -460,7 +472,7 @@
                                                                     All
                                                                 </option>
                                                                 <c:forEach items="${listSize}" var="size">
-                                                                    <option value="${size.id}" ${size.id == idSize ? 'selected' : ''}>
+                                                                    <option value="${size.id}" ${size.id == selectedSize ? 'selected' : ''}>
                                                                             ${size.name}
                                                                     </option>
                                                                 </c:forEach>
@@ -470,11 +482,11 @@
                                                             <label>Color</label>
                                                             <select name="searchColor" class="form-select"
                                                                     aria-label="Default select example">
-                                                                <option value="" ${not empty sessionScope.selectedColor ? '' : 'selected'}>
+                                                                <option value="" ${not empty sessionScope.searchColor ? '' : 'selected'}>
                                                                     All
                                                                 </option>
                                                                 <c:forEach items="${listColor}" var="color">
-                                                                    <option value="${color.id}" ${color.id == idColor ? 'selected' : ''}>
+                                                                    <option value="${color.id}" ${color.id == selectedColor ? 'selected' : ''}>
                                                                             ${color.name}
                                                                     </option>
                                                                 </c:forEach>
@@ -539,6 +551,8 @@
                                                                                 <input type="number"
                                                                                        class="form-control"
                                                                                        name="quantity">
+                                                                                <span style="color: red ; font-weight: bold"
+                                                                                      id="error-quantity-cash"></span>
                                                                             </div>
                                                                             <div class="col-12 mt-2">
                                                                                 <label for="code" class="form-label">Price</label>
@@ -554,7 +568,8 @@
                                                                                        name="totalMoney" readonly>
                                                                             </div>
                                                                             <div class="col-12 mt-3 d-flex justify-content-center">
-                                                                                <button class="btn btn-success"
+                                                                                <button id="submitCart"
+                                                                                        class="btn btn-success"
                                                                                         type="submit">Add to cart
                                                                                 </button>
                                                                             </div>
@@ -594,10 +609,20 @@
                                                         <tr>
                                                             <th scope="row">${item.id}</th>
                                                             <td>${item.code}</td>
-                                                            <td>${productNames[item.idProduct]}</td>
-                                                            <td>${sizeNames[item.idColor]}</td>
-                                                            <td>${colorNames[item.idSize]}</td>
-                                                            <td>${item.quantity}</td>
+                                                            <td>${item.product.name}</td>
+                                                            <td>${item.size.name}</td>
+                                                            <td>${item.color.name}</td>
+
+                                                            <c:choose>
+                                                                <c:when test="${item.quantity eq 0}">
+                                                                    <td><span style="color: red;">Out of stock</span>
+                                                                    </td>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <td>${item.quantity}</td>
+                                                                </c:otherwise>
+                                                            </c:choose>
+
                                                             <td>${item.price}</td>
                                                             <td>
                                                                 <c:choose>
@@ -610,45 +635,36 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td>
-                                                                <c:if test="${empty sessionScope.idOrderChose}">
-                                                                    <button disabled type="button"
-                                                                            class="btn btn-primary"
-                                                                            data-bs-toggle="#"
-                                                                            data-bs-target="#modalProduct"
-                                                                            data-id="${item.id}"
-                                                                            data-code="${item.code}"
-                                                                            data-product="${productNames[item.idProduct]}"
-                                                                            data-color="${sizeNames[item.idColor]}"
-                                                                            data-size="${colorNames[item.idSize]}"
-                                                                            data-quantity="${item.quantity}"
-                                                                            data-price="${item.price}"
-                                                                            data-status="${item.status}">
-                                                                        Choose
-                                                                    </button>
-                                                                </c:if>
-                                                                <c:if test="${not empty sessionScope.idOrderChose}">
-                                                                    <button type="button" class="btn btn-primary"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#modalProduct"
-                                                                            data-id="${item.id}"
-                                                                            data-code="${item.code}"
-                                                                            data-product="${productNames[item.idProduct]}"
-                                                                            data-color="${sizeNames[item.idColor]}"
-                                                                            data-size="${colorNames[item.idSize]}"
-                                                                            data-quantity="${item.quantity}"
-                                                                            data-price="${item.price}"
-                                                                            data-status="${item.status}">
-                                                                        Choose
-                                                                    </button>
-                                                                </c:if>
-
+                                                                <c:choose>
+                                                                    <c:when test="${empty sessionScope.idOrderChose || item.quantity eq 0}">
+                                                                        <button disabled type="button"
+                                                                                class="btn btn-primary">
+                                                                            Choose
+                                                                        </button>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <button type="button" class="btn btn-primary"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#modalProduct"
+                                                                                data-id="${item.id}"
+                                                                                data-code="${item.code}"
+                                                                                data-product="${item.product.name}"
+                                                                                data-color="${item.size.name}"
+                                                                                data-size="${item.color.name}"
+                                                                                data-quantity="${item.quantity}"
+                                                                                data-price="${item.price}"
+                                                                                data-status="${item.status}">
+                                                                            Choose
+                                                                        </button>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
                                                 </c:if>
-
                                                 </tbody>
                                             </table>
+
                                         </div>
                                     </div>
                                 </div>
@@ -837,12 +853,12 @@
                                         <div class="row">
                                             <div class="col-12 mt-2">
                                                 <label>Staff Name</label>
-                                                <input disabled value="${staffNames[bill.idStaff]}" type="text"
+                                                <input disabled value="${staffName}" type="text"
                                                        class="form-control" name="staffName">
                                             </div>
                                             <div class="col-12 mt-2">
                                                 <label>Date Buy</label>
-                                                <fmt:formatDate value="${bill.dateBuy}" pattern="yyyy-MM-dd"
+                                                <fmt:formatDate value="${dateBuy}" pattern="yyyy-MM-dd"
                                                                 var="formattedDate"/>
                                                 <fmt:formatDate value="${bill.dateBuy}" pattern="HH:mm"
                                                                 var="formattedTime"/>
@@ -852,19 +868,22 @@
                                             </div>
                                             <div class="col-12 mt-2">
                                                 <label>Total Money</label>
-                                                <input id="total" disabled value="${bill.total}" type="number"
+                                                <input id="total" disabled value="${total}" type="number"
                                                        class="form-control" name="totalMoney">
                                             </div>
                                             <div class="col-12 mt-2">
                                                 <label>Cash</label>
-                                                 <c:if test="${empty sessionScope.idOrderChose}">
-                                                     <input disabled min="1" max="99999999" id="cash" type="number" class="form-control" name="totalMoney">
-                                                 </c:if>
+                                                <c:if test="${empty sessionScope.idOrderChose}">
+                                                    <input disabled min="1" max="99999999" id="cash" type="number"
+                                                           class="form-control" name="totalMoney">
+                                                </c:if>
 
                                                 <c:if test="${ not empty sessionScope.idOrderChose}">
-                                                    <input  min="1" max="99999999" id="cash" type="number" class="form-control" name="totalMoney">
+                                                    <input min="1" max="99999999" id="cash" type="number"
+                                                           class="form-control" name="totalMoney">
                                                 </c:if>
-                                                <span id="error-cash" style="color: red" class=" text-center fw-bold"></span>
+                                                <span id="error-cash" style="color: red"
+                                                      class=" text-center fw-bold"></span>
                                             </div>
                                             <div class="col-12 mt-2">
                                                 <label>Refund</label>
@@ -874,7 +893,13 @@
 
                                         </div>
                                         <div class="col-12 mt-2 d-flex justify-content-center">
-                                            <button type="submit" class="btn btn-success">Pay</button>
+                                            <span id="message" class="fw-bold text-center" style="color: green"></span>
+                                            <c:if test="${empty sessionScope.idOrderChose}">
+                                                <button disabled id="pay" type="submit" class="btn btn-success">Pay</button>
+                                            </c:if>
+                                            <c:if test="${not empty sessionScope.idOrderChose}">
+                                            <button id="pay" type="submit" class="btn btn-success">Pay</button>
+                                            </c:if>
                                         </div>
                                     </form>
                                 </div>
@@ -922,62 +947,8 @@
 
 
 </script>
-
 <script src="../../js/scopeFilter.js"></script>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var modalProduct = document.getElementById('modalProduct');
-        modalProduct.addEventListener('show.bs.modal', function (event) {
-            let button = event.relatedTarget;
-
-            let id = button.getAttribute('data-id');
-            let code = button.getAttribute('data-code');
-            let product = button.getAttribute('data-product');
-            let color = button.getAttribute('data-color');
-            let size = button.getAttribute('data-size');
-            let price = button.getAttribute('data-price');
-            let quantityInput = modalProduct.querySelector('input[name="quantity"]');
-            let priceModal = modalProduct.querySelector('input[name="price"][disabled]');
-            let totalMoneyInput = modalProduct.querySelector('input[name="totalMoney"][readonly]');
-
-            modalProduct.querySelector('input[name="code"]').value = code;
-            modalProduct.querySelector('input[name="product"][disabled]').value = product;
-            modalProduct.querySelector('input[name="color"][disabled]').value = color;
-            modalProduct.querySelector('input[name="size"][disabled]').value = size;
-            quantityInput.value = 1;
-            priceModal.value = price;
-            totalMoneyInput.value = (quantityInput.value * priceModal.value).toFixed(1)
-            quantityInput.addEventListener('input', function () {
-                totalMoneyInput.value = (quantityInput.value * priceModal.value).toFixed(1);
-            });
-
-            let modalTitle = modalProduct.querySelector('.modal-title');
-            modalTitle.textContent = `Product ${product}`;
-        });
-    });
-</script>
-
-<script>
-    let cash = document.getElementById('cash');
-    let total = document.getElementById('total');
-    let refund = document.getElementById('refund');
-    let errorCash = document.getElementById('error-cash');
-
-    cash.addEventListener('blur', function () {
-        if (cash.value < 0) {
-            errorCash.textContent = 'Cash must be greater than total money';
-        } else {
-            errorCash.textContent = '';
-        }
-    });
-
-    cash.addEventListener('blur', function () {
-        refund.value = cash.value - total.value;
-    });
-</script>
-
-
+<script src="../.././js/modal.js"></script>
+<script src="../.././js/validator.js"></script>
 </body>
 </html>
